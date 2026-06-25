@@ -1023,9 +1023,7 @@ async function handleLogin() {
             document.getElementById('headerUserName').textContent = result.user.name;
             document.getElementById('headerUserRole').textContent = result.user.role + (result.user.role === 'ICD Head' ? ' - ' + result.user.unit : '');
             
-            updateHeaderStats();
             await loadAllData();
-            setUnitFilterBasedOnRole();
         } else {
             errorEl.textContent = result.message || 'Invalid email or password. Please try again.';
             errorEl.classList.add('show');
@@ -1060,57 +1058,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') document.getElementById('loginPassword').focus();
     });
 });
-
-// ============================================================
-// UPDATE HEADER STATS (Admin only)
-// ============================================================
-function updateHeaderStats() {
-    const container = document.getElementById('headerCenter');
-    if (!loggedInUser) { container.innerHTML = ''; return; }
-    
-    if (loggedInUser.role === 'Admin') {
-        let total = allEmployees.length;
-        let fta = 0, vou = 0, cnf = 0, icdHead = 0;
-        allEmployees.forEach(emp => {
-            if (emp.Type === 'FTA') fta++;
-            else if (emp.Type === 'VOU') vou++;
-            else if (emp.Type === 'CNF') cnf++;
-            if (emp.Role === 'ICD Head') icdHead++;
-        });
-        container.innerHTML = `
-            <div class="header-stats">
-                <span><strong>${total}</strong> Total</span>
-                <span><strong>${fta}</strong> FTA</span>
-                <span><strong>${vou}</strong> VOU</span>
-                <span><strong>${cnf}</strong> CNF</span>
-                <span><strong>${icdHead}</strong> ICD Heads</span>
-            </div>
-        `;
-    } else {
-        container.innerHTML = '';
-    }
-}
-
-// ============================================================
-// SET UNIT FILTER BASED ON ROLE
-// ============================================================
-function setUnitFilterBasedOnRole() {
-    const select = document.getElementById('unitFilter');
-    if (!loggedInUser) return;
-    
-    if (loggedInUser.role === 'ICD Head' && loggedInUser.unit) {
-        select.innerHTML = '';
-        const option = document.createElement('option');
-        option.value = loggedInUser.unit;
-        option.textContent = loggedInUser.unit;
-        select.appendChild(option);
-        select.value = loggedInUser.unit;
-        applyFilters();
-    } else {
-        select.value = '';
-        applyFilters();
-    }
-}
 
 // ============================================================
 // API CALL
@@ -1165,11 +1112,16 @@ async function loadAllData() {
         
         const unitResult = await callAPI('getUnits');
         if (unitResult.success) {
-            populateUnitDropdown(unitResult.units);
+            if (loggedInUser && loggedInUser.role === 'ICD Head') {
+                populateUnitDropdownForICDHead(loggedInUser.unit);
+            } else {
+                populateUnitDropdown(unitResult.units);
+            }
         }
         
+        // Update header stats
         updateHeaderStats();
-        updateStats();
+        
         applyFilters();
         
     } catch(error) {
@@ -1179,12 +1131,40 @@ async function loadAllData() {
 }
 
 // ============================================================
-// POPULATE UNIT DROPDOWN
+// UPDATE HEADER STATS (Admin only)
+// ============================================================
+function updateHeaderStats() {
+    const container = document.getElementById('headerCenter');
+    if (!loggedInUser) { container.innerHTML = ''; return; }
+    
+    if (loggedInUser.role === 'Admin') {
+        let total = allEmployees.length;
+        let fta = 0, vou = 0, cnf = 0, icdHead = 0;
+        allEmployees.forEach(emp => {
+            if (emp.Type === 'FTA') fta++;
+            else if (emp.Type === 'VOU') vou++;
+            else if (emp.Type === 'CNF') cnf++;
+            if (emp.Role === 'ICD Head') icdHead++;
+        });
+        container.innerHTML = `
+            <div class="header-stats">
+                <span><strong>${total}</strong> Total</span>
+                <span><strong>${fta}</strong> FTA</span>
+                <span><strong>${vou}</strong> VOU</span>
+                <span><strong>${cnf}</strong> CNF</span>
+                <span><strong>${icdHead}</strong> ICD Heads</span>
+            </div>
+        `;
+    } else {
+        container.innerHTML = '';
+    }
+}
+
+// ============================================================
+// POPULATE UNIT DROPDOWN - Admin
 // ============================================================
 function populateUnitDropdown(units) {
     const select = document.getElementById('unitFilter');
-    if (loggedInUser && loggedInUser.role === 'ICD Head') return;
-    
     select.innerHTML = '<option value="">All Units</option>';
     units.sort((a, b) => a.name.localeCompare(b.name));
     units.forEach(unit => {
@@ -1193,6 +1173,19 @@ function populateUnitDropdown(units) {
         option.textContent = unit.name + ' (' + unit.count + ')';
         select.appendChild(option);
     });
+}
+
+// ============================================================
+// POPULATE UNIT DROPDOWN - ICD Head (only their unit)
+// ============================================================
+function populateUnitDropdownForICDHead(unit) {
+    const select = document.getElementById('unitFilter');
+    select.innerHTML = '';
+    const option = document.createElement('option');
+    option.value = unit;
+    option.textContent = unit;
+    select.appendChild(option);
+    select.value = unit;
 }
 
 // ============================================================
@@ -1208,33 +1201,6 @@ function populateWorkplaceDropdown(workplaces) {
         option.textContent = wp.name + ' (' + wp.count + ')';
         select.appendChild(option);
     });
-}
-
-// ============================================================
-// UPDATE STATS
-// ============================================================
-function updateStats() {
-    let total = allEmployees.length;
-    let fta = 0, vou = 0, cnf = 0, icdHead = 0;
-    
-    allEmployees.forEach(emp => {
-        if (emp.Type === 'FTA') fta++;
-        else if (emp.Type === 'VOU') vou++;
-        else if (emp.Type === 'CNF') cnf++;
-        if (emp.Role === 'ICD Head') icdHead++;
-    });
-    
-    document.getElementById('totalCount').textContent = total;
-    document.getElementById('ftaCount').textContent = fta;
-    document.getElementById('vouCount').textContent = vou;
-    document.getElementById('cnfCount').textContent = cnf;
-    document.getElementById('icdHeadCount').textContent = icdHead;
-    
-    document.getElementById('ftaTypeCount').textContent = fta;
-    document.getElementById('vouTypeCount').textContent = vou;
-    document.getElementById('cnfTypeCount').textContent = cnf;
-    
-    updateHeaderStats();
 }
 
 // ============================================================
@@ -1445,7 +1411,7 @@ function saveUnitWorkload() {
 }
 
 // ============================================================
-// UPDATE TEAM WORKLOAD - Workplace Specific
+// UPDATE TEAM WORKLOAD - Workplace Specific (Take first employee only)
 // ============================================================
 function updateTeamWorkload(unit, workplace) {
     const bar = document.getElementById('teamWorkloadBar');
@@ -1469,7 +1435,7 @@ function updateTeamWorkload(unit, workplace) {
         return;
     }
     
-    // Take the first employee's TeamWorkload
+    // Take the FIRST employee's TeamWorkload (NOT aggregated)
     const firstEmployee = workplaceEmployees[0];
     const teamWorkload = firstEmployee.TeamWorkload;
     
