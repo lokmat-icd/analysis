@@ -1,4 +1,5 @@
-<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxU9rxJ4_W86VwoA5rW7l2GOyV7OPRTTMXUVC7YTDcRxHMD2D85EQAvN8_c8Jdu4INuNQ/exec';-->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbztqZw0Ch5Mqx1QD1B57ngTwZmmDLAe1p5985I-4OGAzbqp3bl0PELRVf-YPKxZUzFcZQ/exec';-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -250,6 +251,98 @@
             box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
         }
 
+        /* UNIT WORKLOAD BAR */
+        .unit-workload-bar {
+            background: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            border-left: 4px solid #2a5298;
+            display: none;
+        }
+        .unit-workload-bar.visible { display: block; }
+        .unit-workload-bar .uw-title {
+            font-weight: 600;
+            color: #1a3a6b;
+            font-size: 14px;
+            margin-bottom: 6px;
+        }
+        .unit-workload-bar .uw-title i { color: #2a5298; margin-right: 6px; }
+        .unit-workload-bar .uw-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .unit-workload-bar .uw-header label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+            margin: 0;
+        }
+        .unit-workload-bar .uw-header .uw-save-btn {
+            padding: 3px 14px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .unit-workload-bar .uw-header .uw-save-btn:hover {
+            background: #218838;
+        }
+        .unit-workload-bar .uw-header .uw-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .unit-workload-bar .uw-header .uw-save-btn.saved {
+            background: #6c757d;
+        }
+        .unit-workload-bar .uw-textarea {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 40px;
+            transition: border-color 0.2s;
+        }
+        .unit-workload-bar .uw-textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        }
+        .unit-workload-bar .uw-textarea::placeholder {
+            color: #aaa;
+        }
+        .unit-workload-bar .uw-textarea:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+        .uw-save-status {
+            font-size: 11px;
+            margin-left: 8px;
+            display: none;
+        }
+        .uw-save-status.show {
+            display: inline-block;
+        }
+        .uw-save-status.saving {
+            color: #ff9800;
+        }
+        .uw-save-status.saved {
+            color: #28a745;
+        }
+        .uw-save-status.error {
+            color: #dc3545;
+        }
+
         /* TEAM WORKLOAD BAR - Two Columns */
         .team-workload-bar {
             background: white;
@@ -273,6 +366,12 @@
             display: flex;
             gap: 20px;
             min-height: 120px;
+        }
+        .tw-container.full-width .tw-left {
+            flex: 1;
+        }
+        .tw-container.full-width .tw-right {
+            display: none;
         }
         .tw-left {
             flex: 1.2;
@@ -523,7 +622,6 @@
         .expertise-editable .exp-select option {
             padding: 4px 8px;
         }
-        /* Save status indicator */
         .exp-save-status {
             font-size: 11px;
             margin-left: 8px;
@@ -541,7 +639,6 @@
         .exp-save-status.error {
             color: #dc3545;
         }
-        /* Expertise Description */
         .expertise-description {
             margin-top: 4px;
             padding: 4px 10px;
@@ -714,6 +811,7 @@
             .tw-remark-header { flex-wrap: wrap; gap: 5px; }
             .special-projects-editable .sp-header { flex-wrap: wrap; gap: 5px; }
             .expertise-editable .exp-header { flex-wrap: wrap; gap: 5px; }
+            .unit-workload-bar .uw-header { flex-wrap: wrap; gap: 5px; }
         }
     </style>
 </head>
@@ -789,10 +887,27 @@
         </div>
     </div>
 
+    <!-- UNIT WORKLOAD BAR -->
+    <div class="unit-workload-bar" id="unitWorkloadBar">
+        <div class="uw-title"><i class="fa fa-building"></i> 📋 Unit Workload</div>
+        <div class="uw-header">
+            <label><i class="fa fa-pencil-square-o"></i> <span id="unitWorkloadLabel">—</span></label>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <span class="uw-save-status" id="uwStatus"></span>
+                <button class="uw-save-btn" id="uwSaveBtn" onclick="saveUnitWorkload()" style="display:none;">
+                    <i class="fa fa-save"></i> Save
+                </button>
+            </div>
+        </div>
+        <textarea class="uw-textarea" id="uwInput" 
+                  placeholder="Enter unit workload details..." 
+                  oninput="onUnitWorkloadChange()"></textarea>
+    </div>
+
     <!-- TEAM WORKLOAD BAR - Two Columns -->
     <div class="team-workload-bar" id="teamWorkloadBar">
         <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
-        <div class="tw-container">
+        <div class="tw-container" id="twContainer">
             <div class="tw-left" id="twLeft">
                 <div id="teamWorkloadContent">
                     <span style="color:#999;">Loading workload data...</span>
@@ -840,7 +955,7 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxU9rxJ4_W86VwoA5rW7l2GOyV7OPRTTMXUVC7YTDcRxHMD2D85EQAvN8_c8Jdu4INuNQ/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbztqZw0Ch5Mqx1QD1B57ngTwZmmDLAe1p5985I-4OGAzbqp3bl0PELRVf-YPKxZUzFcZQ/exec';
 
 // ============================================================
 // EXPERTISE OPTIONS
@@ -866,6 +981,10 @@ let currentAnalysisText = '';
 let remarkChanged = false;
 let remarkSaving = false;
 let loggedInUser = null;
+let currentUnit = '';
+let currentUnitWorkload = '';
+let unitWorkloadChanged = false;
+let unitWorkloadSaving = false;
 
 // ============================================================
 // LOGIN SYSTEM
@@ -1126,6 +1245,9 @@ function applyFilters() {
     const workplace = document.getElementById('workplaceFilter').value;
     const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
     
+    currentUnit = unit;
+    currentWorkplace = workplace;
+    
     filteredEmployees = allEmployees.filter(emp => {
         if (!emp.Name) return false;
         if (unit && emp.Unit !== unit) return false;
@@ -1138,7 +1260,8 @@ function applyFilters() {
     renderEmployees(filteredEmployees);
     updateDisplayStats();
     updateWorkplaceDropdown(unit);
-    updateTeamWorkload(workplace);
+    updateUnitWorkload(unit);
+    updateTeamWorkload(unit, workplace);
     updateExpertiseStats(filteredEmployees);
 }
 
@@ -1203,52 +1326,166 @@ function getAnalysisForWorkplace(workplace) {
 }
 
 // ============================================================
-// UPDATE TEAM WORKLOAD
+// UPDATE UNIT WORKLOAD (Column Q)
 // ============================================================
-function updateTeamWorkload(workplace) {
+function updateUnitWorkload(unit) {
+    const bar = document.getElementById('unitWorkloadBar');
+    const input = document.getElementById('uwInput');
+    const label = document.getElementById('unitWorkloadLabel');
+    const saveBtn = document.getElementById('uwSaveBtn');
+    const statusEl = document.getElementById('uwStatus');
+    
+    if (!unit || unit === '') {
+        bar.classList.remove('visible');
+        return;
+    }
+    
+    label.textContent = unit;
+    bar.classList.add('visible');
+    
+    const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || 
+                     (loggedInUser.role === 'ICD Head' && loggedInUser.unit === unit));
+    
+    callAPI('getUnitWorkload', { unit: unit })
+        .then(result => {
+            if (result.success) {
+                const value = result.unitWorkload || '';
+                input.value = value;
+                currentUnitWorkload = value;
+                unitWorkloadChanged = false;
+                saveBtn.style.display = 'none';
+                statusEl.className = 'uw-save-status show saved';
+                statusEl.textContent = '✓ Loaded';
+                setTimeout(() => {
+                    statusEl.className = 'uw-save-status';
+                }, 1500);
+            }
+            input.disabled = !canEdit;
+            if (!canEdit) {
+                input.title = 'Only Admin and ICD Head can edit';
+            }
+        })
+        .catch(() => {
+            input.value = '';
+            currentUnitWorkload = '';
+            input.disabled = !canEdit;
+        });
+}
+
+function onUnitWorkloadChange() {
+    const input = document.getElementById('uwInput');
+    const saveBtn = document.getElementById('uwSaveBtn');
+    const statusEl = document.getElementById('uwStatus');
+    
+    if (!input) return;
+    
+    const newValue = input.value;
+    if (newValue !== currentUnitWorkload) {
+        unitWorkloadChanged = true;
+        saveBtn.style.display = 'inline-block';
+        statusEl.className = 'uw-save-status show saving';
+        statusEl.textContent = '⏳ Unsaved changes';
+    } else {
+        unitWorkloadChanged = false;
+        saveBtn.style.display = 'none';
+        statusEl.className = 'uw-save-status';
+    }
+}
+
+function saveUnitWorkload() {
+    const input = document.getElementById('uwInput');
+    const saveBtn = document.getElementById('uwSaveBtn');
+    const statusEl = document.getElementById('uwStatus');
+    const unit = currentUnit;
+    
+    if (!unit || unit === '') return;
+    if (unitWorkloadSaving) return;
+    
+    const newValue = input.value;
+    unitWorkloadSaving = true;
+    saveBtn.disabled = true;
+    statusEl.className = 'uw-save-status show saving';
+    statusEl.textContent = '⏳ Saving...';
+    
+    callAPI('saveUnitWorkload', {
+        unit: unit,
+        unitWorkload: newValue
+    })
+    .then(result => {
+        if (result.success) {
+            currentUnitWorkload = newValue;
+            unitWorkloadChanged = false;
+            saveBtn.style.display = 'none';
+            statusEl.className = 'uw-save-status show saved';
+            statusEl.textContent = '✓ Saved';
+            showToast('Unit Workload saved successfully!', 'success');
+        } else {
+            statusEl.className = 'uw-save-status show error';
+            statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+            showToast('Error saving unit workload', 'error');
+        }
+        saveBtn.disabled = false;
+        unitWorkloadSaving = false;
+        setTimeout(() => {
+            if (!unitWorkloadChanged) {
+                statusEl.className = 'uw-save-status';
+            }
+        }, 3000);
+    })
+    .catch(error => {
+        statusEl.className = 'uw-save-status show error';
+        statusEl.textContent = '✗ Error';
+        saveBtn.disabled = false;
+        unitWorkloadSaving = false;
+        showToast('Error saving: ' + error.message, 'error');
+        setTimeout(() => {
+            statusEl.className = 'uw-save-status';
+        }, 3000);
+    });
+}
+
+// ============================================================
+// UPDATE TEAM WORKLOAD - Workplace Specific
+// ============================================================
+function updateTeamWorkload(unit, workplace) {
     const bar = document.getElementById('teamWorkloadBar');
     const content = document.getElementById('teamWorkloadContent');
+    const container = document.getElementById('twContainer');
     const remarkInput = document.getElementById('remarkInput');
     const saveBtn = document.getElementById('remarkSaveBtn');
+    const remarkSection = document.getElementById('twRight');
     
-    currentWorkplace = workplace;
-    
-    if (!workplace || workplace === '') {
+    // If no workplace is selected OR workplace is "All Workplaces", hide the bar
+    if (!unit || !workplace || workplace === '') {
         bar.classList.remove('visible');
         return;
     }
     
-    const teamEmployees = allEmployees.filter(emp => emp.WorkPlace === workplace);
+    // Find employees in this workplace
+    const workplaceEmployees = allEmployees.filter(emp => emp.Unit === unit && emp.WorkPlace === workplace);
     
-    const aggregated = {};
-    let totalPages = 0;
-    
-    teamEmployees.forEach(emp => {
-        if (emp.TeamWorkload && typeof emp.TeamWorkload === 'object') {
-            for (let edition in emp.TeamWorkload) {
-                const wl = emp.TeamWorkload[edition];
-                if (wl && (wl.main_pages || wl.hello_pages)) {
-                    if (!aggregated[edition]) {
-                        aggregated[edition] = { main_pages: 0, hello_pages: 0 };
-                    }
-                    aggregated[edition].main_pages += (wl.main_pages || 0);
-                    aggregated[edition].hello_pages += (wl.hello_pages || 0);
-                }
-            }
-        }
-    });
-    
-    const editions = Object.keys(aggregated);
-    if (editions.length === 0 || teamEmployees.length === 0) {
+    if (workplaceEmployees.length === 0) {
         bar.classList.remove('visible');
         return;
     }
     
+    // Take the first employee's TeamWorkload
+    const firstEmployee = workplaceEmployees[0];
+    const teamWorkload = firstEmployee.TeamWorkload;
+    
+    if (!teamWorkload || typeof teamWorkload !== 'object' || Object.keys(teamWorkload).length === 0) {
+        bar.classList.remove('visible');
+        return;
+    }
+    
+    const editions = Object.keys(teamWorkload);
+    
+    // Build the left content HTML
     let html = '<div class="tw-editions">';
     let grandTotal = 0;
     
     editions.forEach(edition => {
-        const data = aggregated[edition];
+        const data = teamWorkload[edition];
         const main = data.main_pages || 0;
         const hello = data.hello_pages || 0;
         const editionTotal = main + hello;
@@ -1265,18 +1502,28 @@ function updateTeamWorkload(workplace) {
     
     html += '</div>';
     html += `<div class="tw-total">📄 Total: <strong>${grandTotal}</strong> pages across ${editions.length} editions</div>`;
-    html += `<div class="tw-employees">👥 ${teamEmployees.length} employees in this workplace</div>`;
+    html += `<div class="tw-employees">👥 ${workplaceEmployees.length} employees in this workplace</div>`;
     
     content.innerHTML = html;
     
-    const analysisData = getAnalysisForWorkplace(workplace);
-    let analysisText = '';
-    if (analysisData.length > 0) {
-        analysisText = '📊 Analysis:\n' + analysisData.map(a => '• ' + a).join('\n') + '\n\n';
-    }
-    currentAnalysisText = analysisText;
+    // Show/hide remark section based on role
+    const isAdmin = loggedInUser && loggedInUser.role === 'Admin';
     
-    loadRemark(workplace, analysisText);
+    if (isAdmin) {
+        container.classList.remove('full-width');
+        remarkSection.style.display = 'flex';
+        // Load remark for workplace
+        const analysisData = getAnalysisForWorkplace(workplace);
+        let analysisText = '';
+        if (analysisData.length > 0) {
+            analysisText = '📊 Analysis:\n' + analysisData.map(a => '• ' + a).join('\n') + '\n\n';
+        }
+        currentAnalysisText = analysisText;
+        loadRemark(workplace, analysisText);
+    } else {
+        container.classList.add('full-width');
+        remarkSection.style.display = 'none';
+    }
     
     bar.classList.add('visible');
 }
@@ -1478,7 +1725,6 @@ function saveExpertise(empEmail, empName) {
     
     const selectedValue = select.value;
     
-    // Show saving status
     statusEl.textContent = '⏳ Saving...';
     statusEl.className = 'exp-save-status show saving';
     
@@ -1494,18 +1740,13 @@ function saveExpertise(empEmail, empName) {
             }
             statusEl.textContent = '✓ Saved';
             statusEl.className = 'exp-save-status show saved';
-            
-            // Update description
             updateExpertiseDescription(empEmail, selectedValue);
-            
-            // Show toast notification
             showToast('Expertise updated for ' + empName, 'success');
         } else {
             statusEl.textContent = '✗ Error';
             statusEl.className = 'exp-save-status show error';
             showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
         }
-        // Hide status after 2 seconds
         setTimeout(() => {
             statusEl.className = 'exp-save-status';
         }, 2000);
@@ -1520,9 +1761,6 @@ function saveExpertise(empEmail, empName) {
     });
 }
 
-// ============================================================
-// UPDATE EXPERTISE DESCRIPTION
-// ============================================================
 function updateExpertiseDescription(empEmail, value) {
     const descContainer = document.getElementById('exp_desc_' + empEmail);
     if (descContainer) {
@@ -1654,7 +1892,6 @@ function buildEmployeeCard(emp) {
     else if (typeText === 'VOU') typeClass = 'vou';
     else if (typeText === 'CNF') typeClass = 'cnf';
     
-    // Designation + Publications on same line
     let detailHtml = '<div class="detail-row-inline">';
     detailHtml += `<span class="label">Designation</span>`;
     detailHtml += `<span class="value">${escapeHtml(emp.Designation || '—')}</span>`;
@@ -1665,20 +1902,17 @@ function buildEmployeeCard(emp) {
     }
     detailHtml += '</div>';
     
-    // Editable Expertise - Dropdown with Auto-Save
     const empEmail = emp.Email || '';
     const expId = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
     const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
     const currentExpertise = emp.Expertise || '';
     
-    // Build dropdown options
     let optionsHtml = '';
     EXPERTISE_OPTIONS.forEach(option => {
         const selected = (currentExpertise === option.value) ? 'selected' : '';
         optionsHtml += `<option value="${escapeHtml(option.value)}" ${selected}>${escapeHtml(option.value || 'Select...')}</option>`;
     });
     
-    // Current description
     const currentDesc = getExpertiseDescription(currentExpertise);
     const descHtml = currentDesc ? 
         '<i class="fa fa-info-circle"></i> ' + currentDesc : 
@@ -1701,7 +1935,6 @@ function buildEmployeeCard(emp) {
         </div>
     `;
     
-    // Daily workload - FULL display
     let workloadHtml = '';
     if (emp.DailyWorkload && typeof emp.DailyWorkload === 'object') {
         const items = [];
@@ -1740,7 +1973,6 @@ function buildEmployeeCard(emp) {
         }
     }
     
-    // Special Projects - Editable Box
     const projectText = getCleanSpecialProjects(emp);
     const spId = 'sp_' + expId;
     
