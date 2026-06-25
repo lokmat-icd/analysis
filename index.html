@@ -1,5 +1,4 @@
-
-<!-- const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzr5a12Mj4LN45lCw5iLDAdw8TppdHcYsi9fmYcDhEdaJFv4r5NdFCo_LQDagD2uuA_/exec'; -->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxU9rxJ4_W86VwoA5rW7l2GOyV7OPRTTMXUVC7YTDcRxHMD2D85EQAvN8_c8Jdu4INuNQ/exec';-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -482,7 +481,7 @@
             margin: 0 4px;
         }
 
-        /* Expertise - Radio Button Style */
+        /* Expertise - Dropdown Style with Auto-Save */
         .expertise-editable {
             margin-top: 8px;
             padding-top: 8px;
@@ -492,7 +491,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
         .expertise-editable .exp-header label {
             font-weight: 600;
@@ -500,68 +499,57 @@
             color: #555;
             margin: 0;
         }
-        .expertise-editable .exp-header .exp-save-btn {
-            padding: 2px 12px;
+        .expertise-editable .exp-select {
+            width: 100%;
+            padding: 5px 10px;
+            border: 1px solid #ddd;
             border-radius: 4px;
-            border: none;
-            background: #28a745;
-            color: white;
+            font-size: 13px;
+            font-family: inherit;
+            background: white;
+            color: #444;
+            transition: border-color 0.2s;
+        }
+        .expertise-editable .exp-select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        }
+        .expertise-editable .exp-select:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .expertise-editable .exp-select option {
+            padding: 4px 8px;
+        }
+        /* Save status indicator */
+        .exp-save-status {
             font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            margin-left: 8px;
             display: none;
         }
-        .expertise-editable .exp-header .exp-save-btn:hover {
-            background: #218838;
-        }
-        .expertise-editable .exp-header .exp-save-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .expertise-editable .exp-header .exp-save-btn.saved {
-            background: #6c757d;
-        }
-        .expertise-editable .exp-header .exp-save-btn.show {
+        .exp-save-status.show {
             display: inline-block;
         }
-        .expertise-editable .exp-radios {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px 20px;
-            padding: 2px 0;
+        .exp-save-status.saving {
+            color: #ff9800;
         }
-        .expertise-editable .exp-radio-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            font-size: 13px;
-            color: #444;
-            cursor: pointer;
+        .exp-save-status.saved {
+            color: #28a745;
         }
-        .expertise-editable .exp-radio-item input[type="radio"] {
-            width: 16px;
-            height: 16px;
-            cursor: pointer;
-            accent-color: #2a5298;
-        }
-        .expertise-editable .exp-radio-item input[type="radio"]:disabled {
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        .expertise-editable .exp-radio-item.disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
+        .exp-save-status.error {
+            color: #dc3545;
         }
         /* Expertise Description */
         .expertise-description {
-            margin-top: 6px;
-            padding: 6px 12px;
+            margin-top: 4px;
+            padding: 4px 10px;
             background: #f0f7ff;
             border-radius: 4px;
             font-size: 12px;
             color: #1a3a6b;
-            min-height: 30px;
+            min-height: 26px;
             border-left: 3px solid #2a5298;
         }
         .expertise-description i {
@@ -726,7 +714,6 @@
             .tw-remark-header { flex-wrap: wrap; gap: 5px; }
             .special-projects-editable .sp-header { flex-wrap: wrap; gap: 5px; }
             .expertise-editable .exp-header { flex-wrap: wrap; gap: 5px; }
-            .expertise-editable .exp-radios { gap: 6px 14px; }
         }
     </style>
 </head>
@@ -853,12 +840,13 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzr5a12Mj4LN45lCw5iLDAdw8TppdHcYsi9fmYcDhEdaJFv4r5NdFCo_LQDagD2uuA_/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxU9rxJ4_W86VwoA5rW7l2GOyV7OPRTTMXUVC7YTDcRxHMD2D85EQAvN8_c8Jdu4INuNQ/exec';
 
 // ============================================================
 // EXPERTISE OPTIONS
 // ============================================================
 const EXPERTISE_OPTIONS = [
+    { value: '', description: 'Select an expertise...' },
     { value: 'Pagination', description: 'Designer mostly does pagination work' },
     { value: 'Event/Advt', description: 'Designer mostly does Event and Advertisement work' },
     { value: 'Photo', description: 'Designer mostly does Photo editing work' },
@@ -1480,73 +1468,65 @@ function getExpertiseDescription(value) {
 }
 
 // ============================================================
-// SAVE EXPERTISE
+// SAVE EXPERTISE - AUTO SAVE ON DROPDOWN CHANGE
 // ============================================================
-function saveExpertise(empCode, empName) {
-    const radios = document.querySelectorAll('.exp_radio_' + empCode);
-    const saveBtn = document.getElementById('exp_save_btn_' + empCode);
+function saveExpertise(empEmail, empName) {
+    const select = document.getElementById('exp_select_' + empEmail);
+    const statusEl = document.getElementById('exp_status_' + empEmail);
     
-    if (!radios.length || !saveBtn) return;
+    if (!select) return;
     
-    // Find selected value
-    let selectedValue = '';
-    radios.forEach(radio => {
-        if (radio.checked) {
-            selectedValue = radio.value;
-        }
-    });
+    const selectedValue = select.value;
     
-    saveBtn.disabled = true;
-    saveBtn.textContent = '⏳ Saving...';
-    saveBtn.classList.remove('saved');
+    // Show saving status
+    statusEl.textContent = '⏳ Saving...';
+    statusEl.className = 'exp-save-status show saving';
     
     callAPI('saveExpertise', {
-        emp_code: empCode,
+        emp_email: empEmail,
         expertise: selectedValue
     })
     .then(result => {
         if (result.success) {
-            const emp = allEmployees.find(e => e.Name === empCode || e.Code === empCode);
+            const emp = allEmployees.find(e => e.Email === empEmail);
             if (emp) {
                 emp.Expertise = selectedValue;
             }
-            saveBtn.textContent = '✓ Saved';
-            saveBtn.classList.add('saved');
-            showToast('Expertise saved for ' + empName, 'success');
+            statusEl.textContent = '✓ Saved';
+            statusEl.className = 'exp-save-status show saved';
+            
+            // Update description
+            updateExpertiseDescription(empEmail, selectedValue);
+            
+            // Show toast notification
+            showToast('Expertise updated for ' + empName, 'success');
         } else {
-            saveBtn.textContent = '💾 Save';
-            saveBtn.classList.remove('saved');
+            statusEl.textContent = '✗ Error';
+            statusEl.className = 'exp-save-status show error';
             showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
         }
-        saveBtn.disabled = false;
+        // Hide status after 2 seconds
+        setTimeout(() => {
+            statusEl.className = 'exp-save-status';
+        }, 2000);
     })
     .catch(error => {
-        saveBtn.textContent = '💾 Save';
-        saveBtn.classList.remove('saved');
-        saveBtn.disabled = false;
+        statusEl.textContent = '✗ Error';
+        statusEl.className = 'exp-save-status show error';
         showToast('Error saving: ' + error.message, 'error');
+        setTimeout(() => {
+            statusEl.className = 'exp-save-status';
+        }, 2000);
     });
 }
 
-function onExpertiseChange(empCode) {
-    const saveBtn = document.getElementById('exp_save_btn_' + empCode);
-    if (!saveBtn) return;
-    
-    saveBtn.textContent = '💾 Save';
-    saveBtn.classList.remove('saved');
-    saveBtn.disabled = false;
-    
-    // Update description
-    const radios = document.querySelectorAll('.exp_radio_' + empCode);
-    const descContainer = document.getElementById('exp_desc_' + empCode);
+// ============================================================
+// UPDATE EXPERTISE DESCRIPTION
+// ============================================================
+function updateExpertiseDescription(empEmail, value) {
+    const descContainer = document.getElementById('exp_desc_' + empEmail);
     if (descContainer) {
-        let selectedValue = '';
-        radios.forEach(radio => {
-            if (radio.checked) {
-                selectedValue = radio.value;
-            }
-        });
-        const desc = getExpertiseDescription(selectedValue);
+        const desc = getExpertiseDescription(value);
         if (desc) {
             descContainer.innerHTML = '<i class="fa fa-info-circle"></i> ' + desc;
         } else {
@@ -1558,9 +1538,9 @@ function onExpertiseChange(empCode) {
 // ============================================================
 // SAVE SPECIAL PROJECTS
 // ============================================================
-function saveSpecialProjects(empCode, empName) {
-    const textarea = document.getElementById('sp_textarea_' + empCode);
-    const saveBtn = document.getElementById('sp_save_btn_' + empCode);
+function saveSpecialProjects(empEmail, empName) {
+    const textarea = document.getElementById('sp_textarea_' + empEmail);
+    const saveBtn = document.getElementById('sp_save_btn_' + empEmail);
     
     if (!textarea || !saveBtn) return;
     
@@ -1571,12 +1551,12 @@ function saveSpecialProjects(empCode, empName) {
     saveBtn.classList.remove('saved');
     
     callAPI('saveSpecialProjects', {
-        emp_code: empCode,
+        emp_email: empEmail,
         special_projects: newText
     })
     .then(result => {
         if (result.success) {
-            const emp = allEmployees.find(e => e.Name === empCode || e.Code === empCode);
+            const emp = allEmployees.find(e => e.Email === empEmail);
             if (emp) {
                 if (typeof emp.SpecialProjects === 'object') {
                     emp.SpecialProjects.special_projects = newText;
@@ -1602,9 +1582,9 @@ function saveSpecialProjects(empCode, empName) {
     });
 }
 
-function onSpecialProjectChange(spId) {
-    const textarea = document.getElementById('sp_textarea_' + spId);
-    const saveBtn = document.getElementById('sp_save_btn_' + spId);
+function onSpecialProjectChange(empEmail) {
+    const textarea = document.getElementById('sp_textarea_' + empEmail);
+    const saveBtn = document.getElementById('sp_save_btn_' + empEmail);
     
     if (!textarea || !saveBtn) return;
     
@@ -1685,33 +1665,20 @@ function buildEmployeeCard(emp) {
     }
     detailHtml += '</div>';
     
-    // Editable Expertise - Radio Buttons
-    const empCode = emp.Name || emp.Code || 'unknown';
-    const expId = empCode.replace(/[^a-zA-Z0-9]/g, '_');
+    // Editable Expertise - Dropdown with Auto-Save
+    const empEmail = emp.Email || '';
+    const expId = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
     const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
-    
-    // Current expertise value
     const currentExpertise = emp.Expertise || '';
     
-    let radiosHtml = '';
+    // Build dropdown options
+    let optionsHtml = '';
     EXPERTISE_OPTIONS.forEach(option => {
-        const checked = (currentExpertise === option.value) ? 'checked' : '';
-        const disabled = canEdit ? '' : 'disabled';
-        const disabledClass = canEdit ? '' : 'disabled';
-        radiosHtml += `
-            <label class="exp-radio-item ${disabledClass}">
-                <input type="radio" class="exp_radio_${expId}" 
-                       name="expertise_${expId}" 
-                       value="${escapeHtml(option.value)}" 
-                       ${checked} 
-                       ${disabled}
-                       onchange="onExpertiseChange('${expId}')">
-                ${escapeHtml(option.value)}
-            </label>
-        `;
+        const selected = (currentExpertise === option.value) ? 'selected' : '';
+        optionsHtml += `<option value="${escapeHtml(option.value)}" ${selected}>${escapeHtml(option.value || 'Select...')}</option>`;
     });
     
-    // Get description for current selection
+    // Current description
     const currentDesc = getExpertiseDescription(currentExpertise);
     const descHtml = currentDesc ? 
         '<i class="fa fa-info-circle"></i> ' + currentDesc : 
@@ -1721,13 +1688,13 @@ function buildEmployeeCard(emp) {
         <div class="expertise-editable">
             <div class="exp-header">
                 <label><i class="fa fa-tag"></i> Expertise</label>
-                <button class="exp-save-btn ${canEdit ? 'show' : ''}" id="exp_save_btn_${expId}" onclick="saveExpertise('${escapeHtml(empCode)}', '${escapeHtml(emp.Name)}')" style="${!canEdit ? 'display:none;' : ''}">
-                    <i class="fa fa-save"></i> Save
-                </button>
+                <span class="exp-save-status" id="exp_status_${expId}"></span>
             </div>
-            <div class="exp-radios">
-                ${radiosHtml}
-            </div>
+            <select class="exp-select" id="exp_select_${expId}" 
+                    ${canEdit ? '' : 'disabled'}
+                    onchange="saveExpertise('${escapeHtml(empEmail)}', '${escapeHtml(emp.Name)}')">
+                ${optionsHtml}
+            </select>
             <div class="expertise-description" id="exp_desc_${expId}">
                 ${descHtml}
             </div>
@@ -1781,7 +1748,7 @@ function buildEmployeeCard(emp) {
         <div class="special-projects-editable">
             <div class="sp-header">
                 <label><i class="fa fa-pencil-square-o"></i> Special Projects</label>
-                <button class="sp-save-btn ${canEdit ? 'show' : ''}" id="sp_save_btn_${spId}" onclick="saveSpecialProjects('${escapeHtml(empCode)}', '${escapeHtml(emp.Name)}')" style="${!canEdit ? 'display:none;' : ''}">
+                <button class="sp-save-btn ${canEdit ? 'show' : ''}" id="sp_save_btn_${spId}" onclick="saveSpecialProjects('${escapeHtml(empEmail)}', '${escapeHtml(emp.Name)}')" style="${!canEdit ? 'display:none;' : ''}">
                     <i class="fa fa-save"></i> Save
                 </button>
             </div>
