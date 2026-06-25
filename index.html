@@ -1,4 +1,5 @@
-<!-- const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxXcQufIlLN04B-HRDSOH68Dz4Q5KU24p41UpH1IDg9LvjY95BrPsWzJiNENp-3tLZnJw/exec'; -->
+
+<!-- const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzr5a12Mj4LN45lCw5iLDAdw8TppdHcYsi9fmYcDhEdaJFv4r5NdFCo_LQDagD2uuA_/exec'; -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,7 +116,7 @@
         .header {
             background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%);
             color: white;
-            padding: 20px 30px;
+            padding: 12px 25px;
             border-radius: 12px;
             margin-bottom: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
@@ -123,21 +124,46 @@
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
+            min-height: 70px;
         }
-        .header-left { display: flex; align-items: center; gap: 20px; }
-        .header-logo { height: 50px; width: auto; }
-        .header-title h1 { margin: 0; font-size: 22px; font-weight: 600; }
-        .header-title p { margin: 2px 0 0; opacity: 0.8; font-size: 13px; }
-        .header-stats { display: flex; gap: 20px; background: rgba(255,255,255,0.12); padding: 10px 20px; border-radius: 8px; flex-wrap: wrap; }
-        .header-stats span { font-size: 13px; }
-        .header-stats strong { font-size: 18px; }
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+        .header-logo {
+            height: 45px;
+            width: auto;
+            object-fit: contain;
+        }
+        .header-center {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .header-stats {
+            display: flex;
+            gap: 18px;
+            background: rgba(255,255,255,0.12);
+            padding: 6px 18px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+        }
+        .header-stats span {
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .header-stats strong {
+            font-size: 16px;
+        }
         .header-user {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             background: rgba(255,255,255,0.1);
-            padding: 6px 16px 6px 20px;
+            padding: 4px 14px 4px 18px;
             border-radius: 30px;
+            flex-shrink: 0;
         }
         .header-user .user-name {
             font-size: 14px;
@@ -434,7 +460,6 @@
 
         .card-body { padding: 14px 18px 16px; flex: 1; }
 
-        /* Designation + Publications on same line */
         .detail-row-inline {
             display: flex;
             flex-wrap: wrap;
@@ -457,7 +482,7 @@
             margin: 0 4px;
         }
 
-        /* Editable Expertise */
+        /* Expertise - Radio Button Style */
         .expertise-editable {
             margin-top: 8px;
             padding-top: 8px;
@@ -467,7 +492,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .expertise-editable .exp-header label {
             font-weight: 600;
@@ -500,30 +525,53 @@
         .expertise-editable .exp-header .exp-save-btn.show {
             display: inline-block;
         }
-        .expertise-editable .exp-input {
-            width: 100%;
-            padding: 6px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+        .expertise-editable .exp-radios {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 20px;
+            padding: 2px 0;
+        }
+        .expertise-editable .exp-radio-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
             font-size: 13px;
-            font-family: inherit;
-            transition: border-color 0.2s;
             color: #444;
+            cursor: pointer;
         }
-        .expertise-editable .exp-input:focus {
-            outline: none;
-            border-color: #2a5298;
-            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        .expertise-editable .exp-radio-item input[type="radio"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #2a5298;
         }
-        .expertise-editable .exp-input::placeholder {
-            color: #aaa;
+        .expertise-editable .exp-radio-item input[type="radio"]:disabled {
+            cursor: not-allowed;
+            opacity: 0.6;
         }
-        .expertise-editable .exp-input:disabled {
-            background: #f5f5f5;
+        .expertise-editable .exp-radio-item.disabled {
+            opacity: 0.6;
             cursor: not-allowed;
         }
+        /* Expertise Description */
+        .expertise-description {
+            margin-top: 6px;
+            padding: 6px 12px;
+            background: #f0f7ff;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #1a3a6b;
+            min-height: 30px;
+            border-left: 3px solid #2a5298;
+        }
+        .expertise-description i {
+            color: #2a5298;
+            margin-right: 4px;
+        }
+        .expertise-description .empty {
+            color: #999;
+        }
 
-        /* Daily Workload - Clean style */
         .workload-section {
             margin-top: 10px;
             padding-top: 10px;
@@ -549,7 +597,6 @@
         }
         .workload-item .num { font-weight: 600; color: #1a3a6b; }
 
-        /* Special Projects - Editable Box */
         .special-projects-editable {
             margin-top: 10px;
             padding-top: 10px;
@@ -659,9 +706,11 @@
         .loading-spinner i { font-size: 32px; margin-bottom: 12px; display: block; color: #2a5298; }
 
         @media (max-width: 768px) {
-            .header { flex-direction: column; text-align: center; padding: 15px; }
-            .header-stats { margin-top: 10px; justify-content: center; }
-            .header-user { margin-top: 10px; }
+            .header { flex-direction: column; align-items: stretch; padding: 15px; gap: 10px; }
+            .header-left { justify-content: center; }
+            .header-center { justify-content: center; }
+            .header-user { justify-content: center; }
+            .header-stats { justify-content: center; }
             .filters-section { flex-direction: column; align-items: stretch; }
             .filter-group { justify-content: center; }
             .employee-grid { grid-template-columns: 1fr; }
@@ -677,6 +726,7 @@
             .tw-remark-header { flex-wrap: wrap; gap: 5px; }
             .special-projects-editable .sp-header { flex-wrap: wrap; gap: 5px; }
             .expertise-editable .exp-header { flex-wrap: wrap; gap: 5px; }
+            .expertise-editable .exp-radios { gap: 6px 14px; }
         }
     </style>
 </head>
@@ -713,26 +763,14 @@
             <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" 
                  alt="LOKMAT" class="header-logo" 
                  onerror="this.style.display='none'">
-            <div class="header-title">
-                <h1><i class="fa fa-users" style="margin-right:8px;"></i>ICD Employee Directory</h1>
-                <p>Task · Execution · Delivery — Unified Dashboard</p>
-            </div>
         </div>
-        <div style="display:flex; flex-wrap:wrap; gap:15px; align-items:center;">
-            <div class="header-stats">
-                <span><strong id="totalCount">0</strong> Total</span>
-                <span><strong id="ftaCount">0</strong> FTA</span>
-                <span><strong id="vouCount">0</strong> VOU</span>
-                <span><strong id="cnfCount">0</strong> CNF</span>
-                <span><strong id="icdHeadCount">0</strong> ICD Heads</span>
+        <div class="header-center" id="headerCenter"></div>
+        <div class="header-user">
+            <div>
+                <div class="user-name" id="headerUserName">User</div>
+                <div class="user-role" id="headerUserRole">Role</div>
             </div>
-            <div class="header-user">
-                <div>
-                    <div class="user-name" id="headerUserName">User</div>
-                    <div class="user-role" id="headerUserRole">Role</div>
-                </div>
-                <button class="logout-header-btn" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
-            </div>
+            <button class="logout-header-btn" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
         </div>
     </div>
 
@@ -815,7 +853,18 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxXcQufIlLN04B-HRDSOH68Dz4Q5KU24p41UpH1IDg9LvjY95BrPsWzJiNENp-3tLZnJw/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzr5a12Mj4LN45lCw5iLDAdw8TppdHcYsi9fmYcDhEdaJFv4r5NdFCo_LQDagD2uuA_/exec';
+
+// ============================================================
+// EXPERTISE OPTIONS
+// ============================================================
+const EXPERTISE_OPTIONS = [
+    { value: 'Pagination', description: 'Designer mostly does pagination work' },
+    { value: 'Event/Advt', description: 'Designer mostly does Event and Advertisement work' },
+    { value: 'Photo', description: 'Designer mostly does Photo editing work' },
+    { value: 'Prepress', description: 'Designer mostly does PDF Making & Checking work' },
+    { value: 'Allrounder', description: 'Designer is Expert in all work' }
+];
 
 // ============================================================
 // GLOBAL STATE
@@ -866,6 +915,8 @@ async function handleLogin() {
             document.getElementById('mainContent').style.display = 'block';
             document.getElementById('headerUserName').textContent = result.user.name;
             document.getElementById('headerUserRole').textContent = result.user.role + (result.user.role === 'ICD Head' ? ' - ' + result.user.unit : '');
+            
+            updateHeaderStats();
             await loadAllData();
             setUnitFilterBasedOnRole();
         } else {
@@ -902,6 +953,36 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.key === 'Enter') document.getElementById('loginPassword').focus();
     });
 });
+
+// ============================================================
+// UPDATE HEADER STATS (Admin only)
+// ============================================================
+function updateHeaderStats() {
+    const container = document.getElementById('headerCenter');
+    if (!loggedInUser) { container.innerHTML = ''; return; }
+    
+    if (loggedInUser.role === 'Admin') {
+        let total = allEmployees.length;
+        let fta = 0, vou = 0, cnf = 0, icdHead = 0;
+        allEmployees.forEach(emp => {
+            if (emp.Type === 'FTA') fta++;
+            else if (emp.Type === 'VOU') vou++;
+            else if (emp.Type === 'CNF') cnf++;
+            if (emp.Role === 'ICD Head') icdHead++;
+        });
+        container.innerHTML = `
+            <div class="header-stats">
+                <span><strong>${total}</strong> Total</span>
+                <span><strong>${fta}</strong> FTA</span>
+                <span><strong>${vou}</strong> VOU</span>
+                <span><strong>${cnf}</strong> CNF</span>
+                <span><strong>${icdHead}</strong> ICD Heads</span>
+            </div>
+        `;
+    } else {
+        container.innerHTML = '';
+    }
+}
 
 // ============================================================
 // SET UNIT FILTER BASED ON ROLE
@@ -980,6 +1061,7 @@ async function loadAllData() {
             populateUnitDropdown(unitResult.units);
         }
         
+        updateHeaderStats();
         updateStats();
         applyFilters();
         
@@ -1044,6 +1126,8 @@ function updateStats() {
     document.getElementById('ftaTypeCount').textContent = fta;
     document.getElementById('vouTypeCount').textContent = vou;
     document.getElementById('cnfTypeCount').textContent = cnf;
+    
+    updateHeaderStats();
 }
 
 // ============================================================
@@ -1388,15 +1472,29 @@ function setTypeFilter(type) {
 }
 
 // ============================================================
+// GET EXPERTISE DESCRIPTION
+// ============================================================
+function getExpertiseDescription(value) {
+    const option = EXPERTISE_OPTIONS.find(opt => opt.value === value);
+    return option ? option.description : '';
+}
+
+// ============================================================
 // SAVE EXPERTISE
 // ============================================================
 function saveExpertise(empCode, empName) {
-    const input = document.getElementById('exp_input_' + empCode);
+    const radios = document.querySelectorAll('.exp_radio_' + empCode);
     const saveBtn = document.getElementById('exp_save_btn_' + empCode);
     
-    if (!input || !saveBtn) return;
+    if (!radios.length || !saveBtn) return;
     
-    const newText = input.value;
+    // Find selected value
+    let selectedValue = '';
+    radios.forEach(radio => {
+        if (radio.checked) {
+            selectedValue = radio.value;
+        }
+    });
     
     saveBtn.disabled = true;
     saveBtn.textContent = '⏳ Saving...';
@@ -1404,13 +1502,13 @@ function saveExpertise(empCode, empName) {
     
     callAPI('saveExpertise', {
         emp_code: empCode,
-        expertise: newText
+        expertise: selectedValue
     })
     .then(result => {
         if (result.success) {
             const emp = allEmployees.find(e => e.Name === empCode || e.Code === empCode);
             if (emp) {
-                emp.Expertise = newText;
+                emp.Expertise = selectedValue;
             }
             saveBtn.textContent = '✓ Saved';
             saveBtn.classList.add('saved');
@@ -1431,14 +1529,30 @@ function saveExpertise(empCode, empName) {
 }
 
 function onExpertiseChange(empCode) {
-    const input = document.getElementById('exp_input_' + empCode);
     const saveBtn = document.getElementById('exp_save_btn_' + empCode);
-    
-    if (!input || !saveBtn) return;
+    if (!saveBtn) return;
     
     saveBtn.textContent = '💾 Save';
     saveBtn.classList.remove('saved');
     saveBtn.disabled = false;
+    
+    // Update description
+    const radios = document.querySelectorAll('.exp_radio_' + empCode);
+    const descContainer = document.getElementById('exp_desc_' + empCode);
+    if (descContainer) {
+        let selectedValue = '';
+        radios.forEach(radio => {
+            if (radio.checked) {
+                selectedValue = radio.value;
+            }
+        });
+        const desc = getExpertiseDescription(selectedValue);
+        if (desc) {
+            descContainer.innerHTML = '<i class="fa fa-info-circle"></i> ' + desc;
+        } else {
+            descContainer.innerHTML = '<span class="empty">Select an expertise to see description</span>';
+        }
+    }
 }
 
 // ============================================================
@@ -1571,10 +1685,37 @@ function buildEmployeeCard(emp) {
     }
     detailHtml += '</div>';
     
-    // Editable Expertise
+    // Editable Expertise - Radio Buttons
     const empCode = emp.Name || emp.Code || 'unknown';
-    const expId = 'exp_' + empCode.replace(/[^a-zA-Z0-9]/g, '_');
+    const expId = empCode.replace(/[^a-zA-Z0-9]/g, '_');
     const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
+    
+    // Current expertise value
+    const currentExpertise = emp.Expertise || '';
+    
+    let radiosHtml = '';
+    EXPERTISE_OPTIONS.forEach(option => {
+        const checked = (currentExpertise === option.value) ? 'checked' : '';
+        const disabled = canEdit ? '' : 'disabled';
+        const disabledClass = canEdit ? '' : 'disabled';
+        radiosHtml += `
+            <label class="exp-radio-item ${disabledClass}">
+                <input type="radio" class="exp_radio_${expId}" 
+                       name="expertise_${expId}" 
+                       value="${escapeHtml(option.value)}" 
+                       ${checked} 
+                       ${disabled}
+                       onchange="onExpertiseChange('${expId}')">
+                ${escapeHtml(option.value)}
+            </label>
+        `;
+    });
+    
+    // Get description for current selection
+    const currentDesc = getExpertiseDescription(currentExpertise);
+    const descHtml = currentDesc ? 
+        '<i class="fa fa-info-circle"></i> ' + currentDesc : 
+        '<span class="empty">Select an expertise to see description</span>';
     
     let expertiseHtml = `
         <div class="expertise-editable">
@@ -1584,11 +1725,12 @@ function buildEmployeeCard(emp) {
                     <i class="fa fa-save"></i> Save
                 </button>
             </div>
-            <input class="exp-input" id="exp_input_${expId}" 
-                   placeholder="Enter expertise (comma-separated)" 
-                   oninput="onExpertiseChange('${expId}')"
-                   value="${escapeHtml(emp.Expertise || '')}"
-                   ${canEdit ? '' : 'disabled'}>
+            <div class="exp-radios">
+                ${radiosHtml}
+            </div>
+            <div class="expertise-description" id="exp_desc_${expId}">
+                ${descHtml}
+            </div>
         </div>
     `;
     
@@ -1633,7 +1775,7 @@ function buildEmployeeCard(emp) {
     
     // Special Projects - Editable Box
     const projectText = getCleanSpecialProjects(emp);
-    const spId = 'sp_' + empCode.replace(/[^a-zA-Z0-9]/g, '_');
+    const spId = 'sp_' + expId;
     
     let specialHtml = `
         <div class="special-projects-editable">
