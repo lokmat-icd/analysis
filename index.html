@@ -1,0 +1,1764 @@
+<!-- const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxXcQufIlLN04B-HRDSOH68Dz4Q5KU24p41UpH1IDg9LvjY95BrPsWzJiNENp-3tLZnJw/exec'; -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICD Employee Directory</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            background: #f0f2f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            padding: 20px;
+        }
+        .container-fluid { max-width: 1400px; margin: 0 auto; }
+
+        /* LOGIN OVERLAY */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #loginOverlay .login-box {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            max-width: 420px;
+            width: 100%;
+        }
+        #loginOverlay .login-box .logo {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        #loginOverlay .login-box .logo img {
+            width: 100%;
+            height: auto;
+            max-height: 80px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 8px;
+        }
+        #loginOverlay .login-box h3 {
+            text-align: center;
+            color: #1a3a6b;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        #loginOverlay .login-box p.sub {
+            text-align: center;
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 25px;
+        }
+        #loginOverlay .login-box .form-group {
+            margin-bottom: 18px;
+        }
+        #loginOverlay .login-box .form-group label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+        }
+        #loginOverlay .login-box .form-group input {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 10px 14px;
+            font-size: 14px;
+            width: 100%;
+        }
+        #loginOverlay .login-box .form-group input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
+        }
+        #loginOverlay .login-box .login-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #loginOverlay .login-box .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(42,82,152,0.3);
+        }
+        #loginOverlay .login-box .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #loginOverlay .login-box .login-error {
+            color: #dc3545;
+            font-size: 13px;
+            text-align: center;
+            margin-top: 12px;
+            display: none;
+        }
+        #loginOverlay .login-box .login-error.show { display: block; }
+
+        /* HEADER */
+        .header {
+            background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .header-left { display: flex; align-items: center; gap: 20px; }
+        .header-logo { height: 50px; width: auto; }
+        .header-title h1 { margin: 0; font-size: 22px; font-weight: 600; }
+        .header-title p { margin: 2px 0 0; opacity: 0.8; font-size: 13px; }
+        .header-stats { display: flex; gap: 20px; background: rgba(255,255,255,0.12); padding: 10px 20px; border-radius: 8px; flex-wrap: wrap; }
+        .header-stats span { font-size: 13px; }
+        .header-stats strong { font-size: 18px; }
+        .header-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.1);
+            padding: 6px 16px 6px 20px;
+            border-radius: 30px;
+        }
+        .header-user .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .header-user .user-role {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        .header-user .logout-header-btn {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .header-user .logout-header-btn:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* FILTERS */
+        .filters-section {
+            background: white;
+            padding: 18px 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 15px 25px;
+        }
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .filter-group label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #444;
+            margin: 0;
+        }
+        .filter-group select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 13px;
+            min-width: 140px;
+        }
+        .filter-group select:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
+        }
+        .type-filters { display: flex; gap: 5px; flex-wrap: wrap; }
+        .type-btn {
+            padding: 5px 14px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+            background: white;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .type-btn:hover { background: #e8ecf1; }
+        .type-btn.active { background: #2a5298; color: white; border-color: #2a5298; }
+        .type-count { font-size: 11px; color: #666; margin-left: 3px; }
+        .type-btn.active .type-count { color: rgba(255,255,255,0.7); }
+        .search-box {
+            padding: 6px 14px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 13px;
+            min-width: 180px;
+        }
+        .search-box:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
+        }
+
+        /* TEAM WORKLOAD BAR - Two Columns */
+        .team-workload-bar {
+            background: white;
+            padding: 16px 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            border-left: 4px solid #28a745;
+            display: none;
+        }
+        .team-workload-bar.visible { display: block; }
+        .team-workload-bar .tw-title {
+            font-weight: 600;
+            color: #1a3a6b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .team-workload-bar .tw-title i { color: #28a745; margin-right: 6px; }
+        
+        .tw-container {
+            display: flex;
+            gap: 20px;
+            min-height: 120px;
+        }
+        .tw-left {
+            flex: 1.2;
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+        .tw-right {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+        }
+        .tw-editions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 20px;
+        }
+        .tw-edition {
+            font-size: 13px;
+        }
+        .tw-edition strong { color: #1a3a6b; }
+        .tw-total {
+            font-weight: 600;
+            color: #28a745;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .tw-employees {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        /* Remark section */
+        .tw-remark-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            flex-shrink: 0;
+        }
+        .tw-remark-header label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+            margin: 0;
+        }
+        .tw-remark-header .save-btn {
+            padding: 3px 14px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tw-remark-header .save-btn:hover {
+            background: #218838;
+        }
+        .tw-remark-header .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .tw-remark-header .save-btn.saved {
+            background: #6c757d;
+        }
+        .tw-remark-textarea {
+            flex: 1;
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: none;
+            min-height: 60px;
+            transition: border-color 0.2s;
+        }
+        .tw-remark-textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        }
+        .tw-remark-textarea::placeholder {
+            color: #aaa;
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px 30px;
+            background: white;
+            padding: 12px 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .stats-bar .stat-item { font-size: 13px; color: #555; }
+        .stats-bar .stat-item strong { color: #1a3a6b; font-size: 16px; }
+        .stats-bar .stat-divider { color: #ddd; }
+        .stats-bar .stat-expertise {
+            font-size: 13px;
+            color: #555;
+        }
+        .stats-bar .stat-expertise strong { color: #1a3a6b; font-size: 14px; }
+        .stats-bar .expertise-tag-stat {
+            background: #e8f0fe;
+            color: #1a3a6b;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 0 2px;
+        }
+
+        /* EMPLOYEE GRID */
+        .employee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 18px;
+        }
+
+        /* EMPLOYEE CARD */
+        .employee-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: all 0.25s ease;
+            border: 1px solid #e8ecf1;
+            display: flex;
+            flex-direction: column;
+        }
+        .employee-card:hover {
+            box-shadow: 0 6px 25px rgba(0,0,0,0.10);
+            transform: translateY(-3px);
+        }
+        .card-header {
+            padding: 16px 18px 12px;
+            border-bottom: 1px solid #f0f2f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .card-header .name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a3a6b;
+        }
+        .card-header .badge-group {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        .card-header .role-badge {
+            font-size: 11px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .role-badge.admin { background: #dc3545; color: white; }
+        .role-badge.icd-head { background: #ff9800; color: white; }
+        .role-badge.employee { background: #2a5298; color: white; }
+        .role-badge.unknown { background: #6c757d; color: white; }
+        .type-badge {
+            font-size: 11px;
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            background: #e8ecf1;
+            color: #333;
+        }
+        .type-badge.fta { background: #1a3a6b; color: white; }
+        .type-badge.vou { background: #ff9800; color: white; }
+        .type-badge.cnf { background: #28a745; color: white; }
+
+        .card-body { padding: 14px 18px 16px; flex: 1; }
+
+        /* Designation + Publications on same line */
+        .detail-row-inline {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+            font-size: 13px;
+            color: #444;
+            margin-bottom: 4px;
+            align-items: baseline;
+        }
+        .detail-row-inline .label {
+            color: #888;
+            font-weight: 500;
+        }
+        .detail-row-inline .value {
+            color: #222;
+            word-break: break-word;
+        }
+        .detail-row-inline .divider {
+            color: #ccc;
+            margin: 0 4px;
+        }
+
+        /* Editable Expertise */
+        .expertise-editable {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #f0f2f5;
+        }
+        .expertise-editable .exp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .expertise-editable .exp-header label {
+            font-weight: 600;
+            font-size: 12px;
+            color: #555;
+            margin: 0;
+        }
+        .expertise-editable .exp-header .exp-save-btn {
+            padding: 2px 12px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+        .expertise-editable .exp-header .exp-save-btn:hover {
+            background: #218838;
+        }
+        .expertise-editable .exp-header .exp-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .expertise-editable .exp-header .exp-save-btn.saved {
+            background: #6c757d;
+        }
+        .expertise-editable .exp-header .exp-save-btn.show {
+            display: inline-block;
+        }
+        .expertise-editable .exp-input {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+            color: #444;
+        }
+        .expertise-editable .exp-input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        }
+        .expertise-editable .exp-input::placeholder {
+            color: #aaa;
+        }
+        .expertise-editable .exp-input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        /* Daily Workload - Clean style */
+        .workload-section {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #f0f2f5;
+        }
+        .workload-section .wl-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+        }
+        .workload-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+        }
+        .workload-item {
+            background: #f5f7fa;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 12px;
+            color: #444;
+        }
+        .workload-item .num { font-weight: 600; color: #1a3a6b; }
+
+        /* Special Projects - Editable Box */
+        .special-projects-editable {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #f0f2f5;
+        }
+        .special-projects-editable .sp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .special-projects-editable .sp-header label {
+            font-weight: 600;
+            font-size: 12px;
+            color: #555;
+            margin: 0;
+        }
+        .special-projects-editable .sp-header .sp-save-btn {
+            padding: 2px 12px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+        .special-projects-editable .sp-header .sp-save-btn:hover {
+            background: #218838;
+        }
+        .special-projects-editable .sp-header .sp-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .special-projects-editable .sp-header .sp-save-btn.saved {
+            background: #6c757d;
+        }
+        .special-projects-editable .sp-header .sp-save-btn.show {
+            display: inline-block;
+        }
+        .special-projects-editable .sp-textarea {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 50px;
+            transition: border-color 0.2s;
+            color: #444;
+            line-height: 1.5;
+        }
+        .special-projects-editable .sp-textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        }
+        .special-projects-editable .sp-textarea::placeholder {
+            color: #aaa;
+        }
+        .special-projects-editable .sp-textarea:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .card-footer {
+            padding: 10px 18px 14px;
+            border-top: 1px solid #f0f2f5;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            background: #fafbfc;
+            border-radius: 0 0 12px 12px;
+        }
+        .card-footer .hod-status {
+            font-size: 11px;
+            padding: 2px 14px;
+            border-radius: 12px;
+            font-weight: 500;
+        }
+        .hod-status.de { background: #d4edda; color: #155724; }
+        .hod-status.me { background: #fff3cd; color: #856404; }
+        .hod-status.ni { background: #f8d7da; color: #721c24; }
+        .hod-status.na { background: #e2e3e5; color: #555; }
+
+        .no-results {
+            text-align: center;
+            padding: 50px 20px;
+            color: #888;
+            background: white;
+            border-radius: 12px;
+            grid-column: 1 / -1;
+        }
+        .no-results i { font-size: 40px; opacity: 0.3; display: block; margin-bottom: 15px; }
+
+        .loading-spinner {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+            grid-column: 1 / -1;
+        }
+        .loading-spinner i { font-size: 32px; margin-bottom: 12px; display: block; color: #2a5298; }
+
+        @media (max-width: 768px) {
+            .header { flex-direction: column; text-align: center; padding: 15px; }
+            .header-stats { margin-top: 10px; justify-content: center; }
+            .header-user { margin-top: 10px; }
+            .filters-section { flex-direction: column; align-items: stretch; }
+            .filter-group { justify-content: center; }
+            .employee-grid { grid-template-columns: 1fr; }
+            .stats-bar { justify-content: center; }
+            .tw-container { flex-direction: column; }
+            .tw-left, .tw-right { flex: none; }
+            .tw-right { min-height: 120px; }
+            #loginOverlay .login-box { padding: 30px 25px; margin: 15px; }
+        }
+        @media (max-width: 480px) {
+            .card-header { flex-direction: column; align-items: stretch; }
+            .card-footer { flex-direction: column; align-items: stretch; text-align: center; }
+            .tw-remark-header { flex-wrap: wrap; gap: 5px; }
+            .special-projects-editable .sp-header { flex-wrap: wrap; gap: 5px; }
+            .expertise-editable .exp-header { flex-wrap: wrap; gap: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="loginOverlay">
+    <div class="login-box">
+        <div class="logo">
+            <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" alt="LOKMAT">
+            <h3>ICD Employee Directory</h3>
+            <p class="sub">Task · Execution · Delivery — Unified Dashboard</p>
+        </div>
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="username">
+        </div>
+        <div class="form-group">
+            <label>Password (Last 4 digits of Mobile)</label>
+            <input type="password" id="loginPassword" placeholder="Enter last 4 digits" maxlength="4" autocomplete="current-password">
+        </div>
+        <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+            <i class="fa fa-sign-in"></i> Sign In
+        </button>
+        <div class="login-error" id="loginError">Invalid email or password. Please try again.</div>
+    </div>
+</div>
+
+<div class="container-fluid" id="mainContent" style="display:none;">
+
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" 
+                 alt="LOKMAT" class="header-logo" 
+                 onerror="this.style.display='none'">
+            <div class="header-title">
+                <h1><i class="fa fa-users" style="margin-right:8px;"></i>ICD Employee Directory</h1>
+                <p>Task · Execution · Delivery — Unified Dashboard</p>
+            </div>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:15px; align-items:center;">
+            <div class="header-stats">
+                <span><strong id="totalCount">0</strong> Total</span>
+                <span><strong id="ftaCount">0</strong> FTA</span>
+                <span><strong id="vouCount">0</strong> VOU</span>
+                <span><strong id="cnfCount">0</strong> CNF</span>
+                <span><strong id="icdHeadCount">0</strong> ICD Heads</span>
+            </div>
+            <div class="header-user">
+                <div>
+                    <div class="user-name" id="headerUserName">User</div>
+                    <div class="user-role" id="headerUserRole">Role</div>
+                </div>
+                <button class="logout-header-btn" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters-section">
+        <div class="filter-group">
+            <label><i class="fa fa-building"></i> Unit</label>
+            <select id="unitFilter" onchange="applyFilters()">
+                <option value="">All Units</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label><i class="fa fa-map-marker"></i> Workplace</label>
+            <select id="workplaceFilter" onchange="applyFilters()">
+                <option value="">All Workplaces</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label><i class="fa fa-tag"></i> Type</label>
+            <div class="type-filters" id="typeFilters">
+                <button class="type-btn active" data-type="all" onclick="setTypeFilter('all')">All</button>
+                <button class="type-btn" data-type="FTA" onclick="setTypeFilter('FTA')">FTA <span class="type-count" id="ftaTypeCount"></span></button>
+                <button class="type-btn" data-type="VOU" onclick="setTypeFilter('VOU')">VOU <span class="type-count" id="vouTypeCount"></span></button>
+                <button class="type-btn" data-type="CNF" onclick="setTypeFilter('CNF')">CNF <span class="type-count" id="cnfTypeCount"></span></button>
+            </div>
+        </div>
+        <div class="filter-group" style="flex:1; justify-content:flex-end;">
+            <input type="text" class="search-box" id="searchInput" placeholder="🔍 Search by name..." oninput="applyFilters()">
+        </div>
+    </div>
+
+    <!-- TEAM WORKLOAD BAR - Two Columns -->
+    <div class="team-workload-bar" id="teamWorkloadBar">
+        <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
+        <div class="tw-container">
+            <div class="tw-left" id="twLeft">
+                <div id="teamWorkloadContent">
+                    <span style="color:#999;">Loading workload data...</span>
+                </div>
+            </div>
+            <div class="tw-right" id="twRight">
+                <div class="tw-remark-header">
+                    <label><i class="fa fa-pencil-square-o"></i> Remark & Analysis</label>
+                    <button class="save-btn" id="remarkSaveBtn" onclick="saveRemark()">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                </div>
+                <textarea class="tw-remark-textarea" id="remarkInput" 
+                          placeholder="Analysis and remarks for this workplace will appear here..." 
+                          oninput="onRemarkChange()"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="stats-bar" id="statsBar">
+        <span class="stat-item">👥 <strong id="displayCount">0</strong> employees shown</span>
+        <span class="stat-divider">|</span>
+        <span class="stat-item">📋 <strong id="displayFTA">0</strong> FTA</span>
+        <span class="stat-item">📋 <strong id="displayVOU">0</strong> VOU</span>
+        <span class="stat-item">📋 <strong id="displayCNF">0</strong> CNF</span>
+        <span class="stat-divider">|</span>
+        <span class="stat-item">🏢 <strong id="displayUnits">0</strong> units</span>
+        <span class="stat-item">📍 <strong id="displayWorkplaces">0</strong> workplaces</span>
+        <span class="stat-divider">|</span>
+        <span class="stat-expertise">🏷️ <strong>Expertise:</strong> <span id="expertiseList">—</span></span>
+    </div>
+
+    <!-- EMPLOYEE GRID -->
+    <div class="employee-grid" id="employeeGrid">
+        <div class="loading-spinner">
+            <i class="fa fa-spinner fa-spin"></i>
+            Loading employee data...
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxXcQufIlLN04B-HRDSOH68Dz4Q5KU24p41UpH1IDg9LvjY95BrPsWzJiNENp-3tLZnJw/exec';
+
+// ============================================================
+// GLOBAL STATE
+// ============================================================
+let allEmployees = [];
+let currentTypeFilter = 'all';
+let filteredEmployees = [];
+let currentWorkplace = '';
+let currentRemark = '';
+let currentAnalysisText = '';
+let remarkChanged = false;
+let remarkSaving = false;
+let loggedInUser = null;
+
+// ============================================================
+// LOGIN SYSTEM
+// ============================================================
+async function handleLogin() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value.trim();
+    const errorEl = document.getElementById('loginError');
+    const loginBtn = document.getElementById('loginBtn');
+    
+    errorEl.classList.remove('show');
+    
+    if (!email || !password) {
+        errorEl.textContent = 'Please enter both email and password.';
+        errorEl.classList.add('show');
+        return;
+    }
+    
+    loginBtn.disabled = true;
+    loginBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Authenticating...';
+    
+    try {
+        const result = await callAPI('authenticateUser', { email: email, password: password });
+        if (result.success && result.user) {
+            if (result.user.role === 'Employee') {
+                errorEl.textContent = 'Access denied. Only Admin and ICD Head can login.';
+                errorEl.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+                return;
+            }
+            
+            loggedInUser = result.user;
+            document.getElementById('loginOverlay').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+            document.getElementById('headerUserName').textContent = result.user.name;
+            document.getElementById('headerUserRole').textContent = result.user.role + (result.user.role === 'ICD Head' ? ' - ' + result.user.unit : '');
+            await loadAllData();
+            setUnitFilterBasedOnRole();
+        } else {
+            errorEl.textContent = result.message || 'Invalid email or password. Please try again.';
+            errorEl.classList.add('show');
+            loginBtn.disabled = false;
+            loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+        }
+    } catch(err) {
+        errorEl.textContent = 'Error connecting to server. Please try again.';
+        errorEl.classList.add('show');
+        loginBtn.disabled = false;
+        loginBtn.innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+        console.error('Login error:', err);
+    }
+}
+
+function logout() {
+    loggedInUser = null;
+    document.getElementById('mainContent').style.display = 'none';
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.getElementById('loginEmail').value = '';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginError').classList.remove('show');
+    document.getElementById('loginBtn').disabled = false;
+    document.getElementById('loginBtn').innerHTML = '<i class="fa fa-sign-in"></i> Sign In';
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') handleLogin();
+    });
+    document.getElementById('loginEmail').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+    });
+});
+
+// ============================================================
+// SET UNIT FILTER BASED ON ROLE
+// ============================================================
+function setUnitFilterBasedOnRole() {
+    const select = document.getElementById('unitFilter');
+    if (!loggedInUser) return;
+    
+    if (loggedInUser.role === 'ICD Head' && loggedInUser.unit) {
+        select.innerHTML = '';
+        const option = document.createElement('option');
+        option.value = loggedInUser.unit;
+        option.textContent = loggedInUser.unit;
+        select.appendChild(option);
+        select.value = loggedInUser.unit;
+        applyFilters();
+    } else {
+        select.value = '';
+        applyFilters();
+    }
+}
+
+// ============================================================
+// API CALL
+// ============================================================
+function callAPI(action, params) {
+    return new Promise((resolve, reject) => {
+        let url = API_BASE_URL + '?action=' + encodeURIComponent(action);
+        if (params) {
+            url += '&params=' + encodeURIComponent(JSON.stringify(params));
+        }
+        
+        const callbackName = 'jsonp_cb_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        window[callbackName] = function(data) {
+            delete window[callbackName];
+            resolve(data);
+        };
+        
+        const script = document.createElement('script');
+        script.src = url + '&callback=' + callbackName;
+        script.onerror = function() {
+            delete window[callbackName];
+            fetch(url)
+                .then(response => response.json())
+                .then(data => resolve(data))
+                .catch(err => reject(err));
+        };
+        document.body.appendChild(script);
+        
+        setTimeout(() => {
+            if (window[callbackName]) {
+                delete window[callbackName];
+                reject(new Error('Request timeout'));
+            }
+        }, 15000);
+    });
+}
+
+// ============================================================
+// LOAD DATA
+// ============================================================
+async function loadAllData() {
+    try {
+        const empResult = await callAPI('getEmployees');
+        if (empResult.success) {
+            allEmployees = empResult.employees;
+            filteredEmployees = [...allEmployees];
+        } else {
+            console.error('Failed to load employees:', empResult.error);
+            showError('Failed to load employee data: ' + (empResult.error || 'Unknown error'));
+            return;
+        }
+        
+        const unitResult = await callAPI('getUnits');
+        if (unitResult.success) {
+            populateUnitDropdown(unitResult.units);
+        }
+        
+        updateStats();
+        applyFilters();
+        
+    } catch(error) {
+        console.error('Error loading data:', error);
+        showError('Error loading data: ' + error.message);
+    }
+}
+
+// ============================================================
+// POPULATE UNIT DROPDOWN
+// ============================================================
+function populateUnitDropdown(units) {
+    const select = document.getElementById('unitFilter');
+    if (loggedInUser && loggedInUser.role === 'ICD Head') return;
+    
+    select.innerHTML = '<option value="">All Units</option>';
+    units.sort((a, b) => a.name.localeCompare(b.name));
+    units.forEach(unit => {
+        const option = document.createElement('option');
+        option.value = unit.name;
+        option.textContent = unit.name + ' (' + unit.count + ')';
+        select.appendChild(option);
+    });
+}
+
+// ============================================================
+// POPULATE WORKPLACE DROPDOWN
+// ============================================================
+function populateWorkplaceDropdown(workplaces) {
+    const select = document.getElementById('workplaceFilter');
+    select.innerHTML = '<option value="">All Workplaces</option>';
+    workplaces.sort((a, b) => a.name.localeCompare(b.name));
+    workplaces.forEach(wp => {
+        const option = document.createElement('option');
+        option.value = wp.name;
+        option.textContent = wp.name + ' (' + wp.count + ')';
+        select.appendChild(option);
+    });
+}
+
+// ============================================================
+// UPDATE STATS
+// ============================================================
+function updateStats() {
+    let total = allEmployees.length;
+    let fta = 0, vou = 0, cnf = 0, icdHead = 0;
+    
+    allEmployees.forEach(emp => {
+        if (emp.Type === 'FTA') fta++;
+        else if (emp.Type === 'VOU') vou++;
+        else if (emp.Type === 'CNF') cnf++;
+        if (emp.Role === 'ICD Head') icdHead++;
+    });
+    
+    document.getElementById('totalCount').textContent = total;
+    document.getElementById('ftaCount').textContent = fta;
+    document.getElementById('vouCount').textContent = vou;
+    document.getElementById('cnfCount').textContent = cnf;
+    document.getElementById('icdHeadCount').textContent = icdHead;
+    
+    document.getElementById('ftaTypeCount').textContent = fta;
+    document.getElementById('vouTypeCount').textContent = vou;
+    document.getElementById('cnfTypeCount').textContent = cnf;
+}
+
+// ============================================================
+// APPLY FILTERS
+// ============================================================
+function applyFilters() {
+    const unit = document.getElementById('unitFilter').value;
+    const workplace = document.getElementById('workplaceFilter').value;
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+    
+    filteredEmployees = allEmployees.filter(emp => {
+        if (!emp.Name) return false;
+        if (unit && emp.Unit !== unit) return false;
+        if (workplace && emp.WorkPlace !== workplace) return false;
+        if (currentTypeFilter !== 'all' && emp.Type !== currentTypeFilter) return false;
+        if (searchTerm && !emp.Name.toLowerCase().includes(searchTerm)) return false;
+        return true;
+    });
+    
+    renderEmployees(filteredEmployees);
+    updateDisplayStats();
+    updateWorkplaceDropdown(unit);
+    updateTeamWorkload(workplace);
+    updateExpertiseStats(filteredEmployees);
+}
+
+// ============================================================
+// UPDATE WORKPLACE DROPDOWN
+// ============================================================
+function updateWorkplaceDropdown(unit) {
+    const select = document.getElementById('workplaceFilter');
+    const currentValue = select.value;
+    
+    if (!unit) {
+        const workplaces = {};
+        allEmployees.forEach(emp => {
+            if (emp.WorkPlace && emp.WorkPlace.trim()) {
+                if (!workplaces[emp.WorkPlace]) workplaces[emp.WorkPlace] = 0;
+                workplaces[emp.WorkPlace]++;
+            }
+        });
+        const workplaceList = Object.keys(workplaces).map(key => ({ name: key, count: workplaces[key] }));
+        populateWorkplaceDropdown(workplaceList);
+    } else {
+        const workplaces = {};
+        allEmployees.forEach(emp => {
+            if (emp.Unit === unit && emp.WorkPlace && emp.WorkPlace.trim()) {
+                if (!workplaces[emp.WorkPlace]) workplaces[emp.WorkPlace] = 0;
+                workplaces[emp.WorkPlace]++;
+            }
+        });
+        const workplaceList = Object.keys(workplaces).map(key => ({ name: key, count: workplaces[key] }));
+        populateWorkplaceDropdown(workplaceList);
+    }
+    
+    if (currentValue) {
+        let found = false;
+        for (let i = 0; i < select.options.length; i++) {
+            if (select.options[i].value === currentValue) {
+                select.value = currentValue;
+                found = true;
+                break;
+            }
+        }
+        if (!found) select.value = '';
+    }
+}
+
+// ============================================================
+// GET ANALYSIS DATA FOR WORKPLACE
+// ============================================================
+function getAnalysisForWorkplace(workplace) {
+    const analysisValues = [];
+    allEmployees.forEach(emp => {
+        if (emp.WorkPlace === workplace && emp.Analysis && emp.Analysis.trim()) {
+            const parts = emp.Analysis.split(',').map(s => s.trim()).filter(s => s);
+            parts.forEach(p => {
+                if (!analysisValues.includes(p)) {
+                    analysisValues.push(p);
+                }
+            });
+        }
+    });
+    return analysisValues;
+}
+
+// ============================================================
+// UPDATE TEAM WORKLOAD
+// ============================================================
+function updateTeamWorkload(workplace) {
+    const bar = document.getElementById('teamWorkloadBar');
+    const content = document.getElementById('teamWorkloadContent');
+    const remarkInput = document.getElementById('remarkInput');
+    const saveBtn = document.getElementById('remarkSaveBtn');
+    
+    currentWorkplace = workplace;
+    
+    if (!workplace || workplace === '') {
+        bar.classList.remove('visible');
+        return;
+    }
+    
+    const teamEmployees = allEmployees.filter(emp => emp.WorkPlace === workplace);
+    
+    const aggregated = {};
+    let totalPages = 0;
+    
+    teamEmployees.forEach(emp => {
+        if (emp.TeamWorkload && typeof emp.TeamWorkload === 'object') {
+            for (let edition in emp.TeamWorkload) {
+                const wl = emp.TeamWorkload[edition];
+                if (wl && (wl.main_pages || wl.hello_pages)) {
+                    if (!aggregated[edition]) {
+                        aggregated[edition] = { main_pages: 0, hello_pages: 0 };
+                    }
+                    aggregated[edition].main_pages += (wl.main_pages || 0);
+                    aggregated[edition].hello_pages += (wl.hello_pages || 0);
+                }
+            }
+        }
+    });
+    
+    const editions = Object.keys(aggregated);
+    if (editions.length === 0 || teamEmployees.length === 0) {
+        bar.classList.remove('visible');
+        return;
+    }
+    
+    let html = '<div class="tw-editions">';
+    let grandTotal = 0;
+    
+    editions.forEach(edition => {
+        const data = aggregated[edition];
+        const main = data.main_pages || 0;
+        const hello = data.hello_pages || 0;
+        const editionTotal = main + hello;
+        grandTotal += editionTotal;
+        
+        const helloLabel = (edition.toLowerCase().includes('samachar')) ? 'Apna' : 
+                           (edition.toLowerCase().includes('times')) ? 'FIRST' : 'Hello';
+        
+        html += `<div class="tw-edition">
+            <strong>${escapeHtml(edition)}</strong>: 
+            Main(${main}) + ${helloLabel}(${hello}) = <strong>${editionTotal}</strong> pages
+        </div>`;
+    });
+    
+    html += '</div>';
+    html += `<div class="tw-total">📄 Total: <strong>${grandTotal}</strong> pages across ${editions.length} editions</div>`;
+    html += `<div class="tw-employees">👥 ${teamEmployees.length} employees in this workplace</div>`;
+    
+    content.innerHTML = html;
+    
+    const analysisData = getAnalysisForWorkplace(workplace);
+    let analysisText = '';
+    if (analysisData.length > 0) {
+        analysisText = '📊 Analysis:\n' + analysisData.map(a => '• ' + a).join('\n') + '\n\n';
+    }
+    currentAnalysisText = analysisText;
+    
+    loadRemark(workplace, analysisText);
+    
+    bar.classList.add('visible');
+}
+
+// ============================================================
+// REMARK FUNCTIONS
+// ============================================================
+function loadRemark(workplace, analysisText) {
+    const remarkInput = document.getElementById('remarkInput');
+    const saveBtn = document.getElementById('remarkSaveBtn');
+    
+    const stored = localStorage.getItem('remark_' + workplace);
+    if (stored !== null) {
+        const fullText = analysisText + stored;
+        remarkInput.value = fullText;
+        currentRemark = fullText;
+        remarkChanged = false;
+        saveBtn.textContent = '✓ Saved';
+        saveBtn.classList.add('saved');
+        saveBtn.disabled = true;
+        return;
+    }
+    
+    callAPI('getRemark', { workplace: workplace })
+        .then(result => {
+            let savedRemark = '';
+            if (result.success && result.remark) {
+                savedRemark = result.remark;
+                localStorage.setItem('remark_' + workplace, savedRemark);
+            }
+            const fullText = analysisText + savedRemark;
+            remarkInput.value = fullText;
+            currentRemark = fullText;
+            remarkChanged = false;
+            saveBtn.textContent = '✓ Saved';
+            saveBtn.classList.add('saved');
+            saveBtn.disabled = true;
+        })
+        .catch(() => {
+            const fullText = analysisText;
+            remarkInput.value = fullText;
+            currentRemark = fullText;
+            remarkChanged = false;
+            saveBtn.textContent = '✓ Saved';
+            saveBtn.classList.add('saved');
+            saveBtn.disabled = true;
+        });
+}
+
+function onRemarkChange() {
+    const remarkInput = document.getElementById('remarkInput');
+    const saveBtn = document.getElementById('remarkSaveBtn');
+    const newValue = remarkInput.value;
+    
+    if (newValue !== currentRemark) {
+        remarkChanged = true;
+        saveBtn.textContent = '💾 Save';
+        saveBtn.classList.remove('saved');
+        saveBtn.disabled = false;
+    } else {
+        remarkChanged = false;
+        saveBtn.textContent = '✓ Saved';
+        saveBtn.classList.add('saved');
+        saveBtn.disabled = true;
+    }
+}
+
+function saveRemark() {
+    const remarkInput = document.getElementById('remarkInput');
+    const saveBtn = document.getElementById('remarkSaveBtn');
+    const fullText = remarkInput.value;
+    const workplace = currentWorkplace;
+    
+    if (!workplace || workplace === '') {
+        return;
+    }
+    
+    if (remarkSaving) return;
+    remarkSaving = true;
+    saveBtn.disabled = true;
+    saveBtn.textContent = '⏳ Saving...';
+    
+    callAPI('saveRemark', { 
+        workplace: workplace, 
+        remark: fullText 
+    })
+    .then(result => {
+        if (result.success) {
+            currentRemark = fullText;
+            localStorage.setItem('remark_' + workplace, fullText);
+            remarkChanged = false;
+            saveBtn.textContent = '✓ Saved';
+            saveBtn.classList.add('saved');
+            saveBtn.disabled = true;
+            showToast('Remark saved successfully!', 'success');
+        } else {
+            saveBtn.textContent = '💾 Save';
+            saveBtn.classList.remove('saved');
+            saveBtn.disabled = false;
+            showToast('Error saving remark: ' + (result.error || 'Unknown error'), 'error');
+        }
+        remarkSaving = false;
+    })
+    .catch(error => {
+        saveBtn.textContent = '💾 Save';
+        saveBtn.classList.remove('saved');
+        saveBtn.disabled = false;
+        remarkSaving = false;
+        showToast('Error saving remark: ' + error.message, 'error');
+    });
+}
+
+// ============================================================
+// UPDATE EXPERTISE STATS
+// ============================================================
+function updateExpertiseStats(employees) {
+    const container = document.getElementById('expertiseList');
+    
+    if (!employees || employees.length === 0) {
+        container.textContent = '—';
+        return;
+    }
+    
+    const expertiseCounts = {};
+    employees.forEach(emp => {
+        if (emp.Expertise) {
+            const skills = emp.Expertise.split(',').map(s => s.trim()).filter(s => s);
+            skills.forEach(skill => {
+                expertiseCounts[skill] = (expertiseCounts[skill] || 0) + 1;
+            });
+        }
+    });
+    
+    const skills = Object.keys(expertiseCounts);
+    if (skills.length === 0) {
+        container.textContent = '—';
+        return;
+    }
+    
+    let html = '';
+    skills.forEach((skill, index) => {
+        if (index > 0) html += ', ';
+        html += `<span class="expertise-tag-stat">${escapeHtml(skill)} - ${expertiseCounts[skill]}</span>`;
+    });
+    container.innerHTML = html;
+}
+
+// ============================================================
+// UPDATE DISPLAY STATS
+// ============================================================
+function updateDisplayStats() {
+    let fta = 0, vou = 0, cnf = 0;
+    const units = new Set();
+    const workplaces = new Set();
+    
+    filteredEmployees.forEach(emp => {
+        if (emp.Type === 'FTA') fta++;
+        else if (emp.Type === 'VOU') vou++;
+        else if (emp.Type === 'CNF') cnf++;
+        if (emp.Unit) units.add(emp.Unit);
+        if (emp.WorkPlace) workplaces.add(emp.WorkPlace);
+    });
+    
+    document.getElementById('displayCount').textContent = filteredEmployees.length;
+    document.getElementById('displayFTA').textContent = fta;
+    document.getElementById('displayVOU').textContent = vou;
+    document.getElementById('displayCNF').textContent = cnf;
+    document.getElementById('displayUnits').textContent = units.size;
+    document.getElementById('displayWorkplaces').textContent = workplaces.size;
+}
+
+// ============================================================
+// SET TYPE FILTER
+// ============================================================
+function setTypeFilter(type) {
+    currentTypeFilter = type;
+    document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.type === type);
+    });
+    applyFilters();
+}
+
+// ============================================================
+// SAVE EXPERTISE
+// ============================================================
+function saveExpertise(empCode, empName) {
+    const input = document.getElementById('exp_input_' + empCode);
+    const saveBtn = document.getElementById('exp_save_btn_' + empCode);
+    
+    if (!input || !saveBtn) return;
+    
+    const newText = input.value;
+    
+    saveBtn.disabled = true;
+    saveBtn.textContent = '⏳ Saving...';
+    saveBtn.classList.remove('saved');
+    
+    callAPI('saveExpertise', {
+        emp_code: empCode,
+        expertise: newText
+    })
+    .then(result => {
+        if (result.success) {
+            const emp = allEmployees.find(e => e.Name === empCode || e.Code === empCode);
+            if (emp) {
+                emp.Expertise = newText;
+            }
+            saveBtn.textContent = '✓ Saved';
+            saveBtn.classList.add('saved');
+            showToast('Expertise saved for ' + empName, 'success');
+        } else {
+            saveBtn.textContent = '💾 Save';
+            saveBtn.classList.remove('saved');
+            showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
+        }
+        saveBtn.disabled = false;
+    })
+    .catch(error => {
+        saveBtn.textContent = '💾 Save';
+        saveBtn.classList.remove('saved');
+        saveBtn.disabled = false;
+        showToast('Error saving: ' + error.message, 'error');
+    });
+}
+
+function onExpertiseChange(empCode) {
+    const input = document.getElementById('exp_input_' + empCode);
+    const saveBtn = document.getElementById('exp_save_btn_' + empCode);
+    
+    if (!input || !saveBtn) return;
+    
+    saveBtn.textContent = '💾 Save';
+    saveBtn.classList.remove('saved');
+    saveBtn.disabled = false;
+}
+
+// ============================================================
+// SAVE SPECIAL PROJECTS
+// ============================================================
+function saveSpecialProjects(empCode, empName) {
+    const textarea = document.getElementById('sp_textarea_' + empCode);
+    const saveBtn = document.getElementById('sp_save_btn_' + empCode);
+    
+    if (!textarea || !saveBtn) return;
+    
+    const newText = textarea.value;
+    
+    saveBtn.disabled = true;
+    saveBtn.textContent = '⏳ Saving...';
+    saveBtn.classList.remove('saved');
+    
+    callAPI('saveSpecialProjects', {
+        emp_code: empCode,
+        special_projects: newText
+    })
+    .then(result => {
+        if (result.success) {
+            const emp = allEmployees.find(e => e.Name === empCode || e.Code === empCode);
+            if (emp) {
+                if (typeof emp.SpecialProjects === 'object') {
+                    emp.SpecialProjects.special_projects = newText;
+                } else {
+                    emp.SpecialProjects = newText;
+                }
+            }
+            saveBtn.textContent = '✓ Saved';
+            saveBtn.classList.add('saved');
+            showToast('Special projects saved for ' + empName, 'success');
+        } else {
+            saveBtn.textContent = '💾 Save';
+            saveBtn.classList.remove('saved');
+            showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
+        }
+        saveBtn.disabled = false;
+    })
+    .catch(error => {
+        saveBtn.textContent = '💾 Save';
+        saveBtn.classList.remove('saved');
+        saveBtn.disabled = false;
+        showToast('Error saving: ' + error.message, 'error');
+    });
+}
+
+function onSpecialProjectChange(spId) {
+    const textarea = document.getElementById('sp_textarea_' + spId);
+    const saveBtn = document.getElementById('sp_save_btn_' + spId);
+    
+    if (!textarea || !saveBtn) return;
+    
+    saveBtn.textContent = '💾 Save';
+    saveBtn.classList.remove('saved');
+    saveBtn.disabled = false;
+}
+
+// ============================================================
+// GET CLEAN SPECIAL PROJECTS TEXT
+// ============================================================
+function getCleanSpecialProjects(emp) {
+    let projectText = '';
+    if (emp.SpecialProjects) {
+        if (typeof emp.SpecialProjects === 'object') {
+            projectText = emp.SpecialProjects.special_projects || emp.SpecialProjects.job_description || '';
+        } else if (typeof emp.SpecialProjects === 'string') {
+            projectText = emp.SpecialProjects;
+        }
+    }
+    let cleanText = projectText.trim();
+    cleanText = cleanText.replace(/^\s*\*\s*/gm, '');
+    cleanText = cleanText.replace(/\n/g, ' ');
+    cleanText = cleanText.replace(/\t/g, ' ');
+    cleanText = cleanText.replace(/ +/g, ' ');
+    cleanText = cleanText.trim();
+    return cleanText;
+}
+
+// ============================================================
+// RENDER EMPLOYEES
+// ============================================================
+function renderEmployees(employees) {
+    const grid = document.getElementById('employeeGrid');
+    
+    if (employees.length === 0) {
+        grid.innerHTML = `
+            <div class="no-results">
+                <i class="fa fa-search"></i>
+                No employees found matching the current filters
+                <br><small style="color:#aaa;">Try adjusting your filters or search terms</small>
+            </div>
+        `;
+        return;
+    }
+    
+    let html = '';
+    employees.forEach(emp => {
+        html += buildEmployeeCard(emp);
+    });
+    grid.innerHTML = html;
+}
+
+// ============================================================
+// BUILD EMPLOYEE CARD
+// ============================================================
+function buildEmployeeCard(emp) {
+    let roleClass = 'unknown';
+    let roleText = emp.Role || 'Employee';
+    if (roleText === 'Admin') { roleClass = 'admin'; }
+    else if (roleText === 'ICD Head') { roleClass = 'icd-head'; }
+    else if (roleText === 'Employee') { roleClass = 'employee'; }
+    
+    let typeClass = '';
+    let typeText = emp.Type || '';
+    if (typeText === 'FTA') typeClass = 'fta';
+    else if (typeText === 'VOU') typeClass = 'vou';
+    else if (typeText === 'CNF') typeClass = 'cnf';
+    
+    // Designation + Publications on same line
+    let detailHtml = '<div class="detail-row-inline">';
+    detailHtml += `<span class="label">Designation</span>`;
+    detailHtml += `<span class="value">${escapeHtml(emp.Designation || '—')}</span>`;
+    if (emp.Publication) {
+        detailHtml += `<span class="divider">|</span>`;
+        detailHtml += `<span class="label">Publications</span>`;
+        detailHtml += `<span class="value">${escapeHtml(emp.Publication)}</span>`;
+    }
+    detailHtml += '</div>';
+    
+    // Editable Expertise
+    const empCode = emp.Name || emp.Code || 'unknown';
+    const expId = 'exp_' + empCode.replace(/[^a-zA-Z0-9]/g, '_');
+    const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
+    
+    let expertiseHtml = `
+        <div class="expertise-editable">
+            <div class="exp-header">
+                <label><i class="fa fa-tag"></i> Expertise</label>
+                <button class="exp-save-btn ${canEdit ? 'show' : ''}" id="exp_save_btn_${expId}" onclick="saveExpertise('${escapeHtml(empCode)}', '${escapeHtml(emp.Name)}')" style="${!canEdit ? 'display:none;' : ''}">
+                    <i class="fa fa-save"></i> Save
+                </button>
+            </div>
+            <input class="exp-input" id="exp_input_${expId}" 
+                   placeholder="Enter expertise (comma-separated)" 
+                   oninput="onExpertiseChange('${expId}')"
+                   value="${escapeHtml(emp.Expertise || '')}"
+                   ${canEdit ? '' : 'disabled'}>
+        </div>
+    `;
+    
+    // Daily workload - FULL display
+    let workloadHtml = '';
+    if (emp.DailyWorkload && typeof emp.DailyWorkload === 'object') {
+        const items = [];
+        const wl = emp.DailyWorkload;
+        const labels = {
+            main_full_page_design: 'Main Full Page Design',
+            main_page_alter_ad_schedule: 'Main Page Alter (Ad Schedule)',
+            main_page_alter_news_update: 'Main Page Alter (News Update)',
+            main_infographic: 'Main Infographic',
+            hello_full_page_design: 'Hello Full Page Design',
+            hello_page_alter_ad_schedule: 'Hello Page Alter (Ad Schedule)',
+            hello_page_alter_news_update: 'Hello Page Alter (News Update)',
+            hello_infographic: 'Hello Infographic',
+            display_ad_design: 'Display Ad Design',
+            event_creative: 'Event Creative',
+            supplement_design: 'Supplement Design',
+            ai_image: 'AI Image',
+            photo_correction: 'Photo Correction',
+            pdf_quality_check: 'PDF Quality Check',
+            epaper_page_upload: 'Epaper Page Upload',
+            news_article_typing: 'News/Article Typing (words)'
+        };
+        
+        for (let key in wl) {
+            if (wl[key] && wl[key] > 0 && labels[key]) {
+                items.push({ label: labels[key], num: wl[key] });
+            }
+        }
+        
+        if (items.length > 0) {
+            workloadHtml = '<div class="workload-section"><div class="wl-title"><i class="fa fa-calendar"></i> 📋 Daily Workload</div><div class="workload-items">';
+            items.forEach(item => {
+                workloadHtml += '<span class="workload-item"><span class="num">' + item.num + '</span> ' + item.label + '</span>';
+            });
+            workloadHtml += '</div></div>';
+        }
+    }
+    
+    // Special Projects - Editable Box
+    const projectText = getCleanSpecialProjects(emp);
+    const spId = 'sp_' + empCode.replace(/[^a-zA-Z0-9]/g, '_');
+    
+    let specialHtml = `
+        <div class="special-projects-editable">
+            <div class="sp-header">
+                <label><i class="fa fa-pencil-square-o"></i> Special Projects</label>
+                <button class="sp-save-btn ${canEdit ? 'show' : ''}" id="sp_save_btn_${spId}" onclick="saveSpecialProjects('${escapeHtml(empCode)}', '${escapeHtml(emp.Name)}')" style="${!canEdit ? 'display:none;' : ''}">
+                    <i class="fa fa-save"></i> Save
+                </button>
+            </div>
+            <textarea class="sp-textarea" id="sp_textarea_${spId}" 
+                      placeholder="No special projects listed..." 
+                      oninput="onSpecialProjectChange('${spId}')"
+                      ${canEdit ? '' : 'disabled'}>${escapeHtml(projectText)}</textarea>
+        </div>
+    `;
+    
+    let hodStatusHtml = '';
+    let hodLevel = 'na';
+    let hodText = 'Not Assessed';
+    if (emp.HODEvaluation && emp.HODEvaluation.Overall_Assessed_Level) {
+        hodLevel = emp.HODEvaluation.Overall_Assessed_Level.toLowerCase();
+        if (hodLevel === 'de') hodText = 'DE - Distinguished Expert';
+        else if (hodLevel === 'me') hodText = 'ME - Meets Expectations';
+        else if (hodLevel === 'ni') hodText = 'NI - Needs Improvement';
+        else hodText = emp.HODEvaluation.Overall_Assessed_Level;
+        hodStatusHtml = '<span class="hod-status ' + hodLevel + '">⭐ ' + hodText + '</span>';
+    }
+    
+    return `
+        <div class="employee-card">
+            <div class="card-header">
+                <span class="name">${escapeHtml(emp.Name)}</span>
+                <div class="badge-group">
+                    ${typeText ? `<span class="type-badge ${typeClass}">${escapeHtml(typeText)}</span>` : ''}
+                    <span class="role-badge ${roleClass}">${roleText}</span>
+                </div>
+            </div>
+            <div class="card-body">
+                ${detailHtml}
+                ${expertiseHtml}
+                ${workloadHtml}
+                ${specialHtml}
+            </div>
+            <div class="card-footer">
+                ${hodStatusHtml || '<span class="hod-status na">Not Assessed</span>'}
+            </div>
+        </div>
+    `;
+}
+
+// ============================================================
+// TOAST NOTIFICATION
+// ============================================================
+function showToast(message, type) {
+    const existing = document.querySelector('.custom-toast');
+    if (existing) existing.remove();
+    
+    const toast = document.createElement('div');
+    toast.className = 'custom-toast';
+    toast.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        padding: 12px 24px;
+        border-radius: 8px;
+        color: white;
+        font-size: 14px;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        transition: all 0.3s ease;
+        max-width: 400px;
+    `;
+    
+    if (type === 'success') {
+        toast.style.background = '#28a745';
+    } else if (type === 'error') {
+        toast.style.background = '#dc3545';
+    } else {
+        toast.style.background = '#17a2b8';
+    }
+    
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(10px)';
+        setTimeout(() => toast.remove(), 400);
+    }, 3000);
+}
+
+// ============================================================
+// HELPER: Escape HTML
+// ============================================================
+function escapeHtml(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+// ============================================================
+// HELPER: Show Error
+// ============================================================
+function showError(message) {
+    const grid = document.getElementById('employeeGrid');
+    grid.innerHTML = `
+        <div class="no-results" style="border-left: 4px solid #dc3545;">
+            <i class="fa fa-exclamation-triangle" style="color:#dc3545;"></i>
+            ${escapeHtml(message)}
+            <br><small style="color:#aaa;">Please check your API URL and try again</small>
+        </div>
+    `;
+}
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('unitFilter').addEventListener('change', function() {
+        applyFilters();
+    });
+});
+</script>
+
+</body>
+</html>
