@@ -1,4 +1,4 @@
-<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxSmf9kp6KtNeKg9R2lyjEFvqu0g33ubY9O83pJNqGj3HPejBkUki_DxqNBEuV4wzwJPA/exec'; -->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwgI6KTYxCdf7bZGGvfLngXFYsN2XqqQVDbPdWmA6SSoXXJTmEmgVAm7ByYPnBjbt1Z9g/exec'; -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -295,6 +295,122 @@
             box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
         }
 
+        /* COMMON UNIT PROJECTS - Below Filters */
+        .common-unit-projects {
+            background: white;
+            padding: 16px 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            border-left: 4px solid #6f42c1;
+            display: none;
+        }
+        .common-unit-projects.visible { display: block; }
+
+        .common-unit-projects .cup-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .common-unit-projects .cup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .common-unit-projects .cup-title {
+            font-weight: 600;
+            color: #1a3a6b;
+            font-size: 14px;
+        }
+        .common-unit-projects .cup-title i { color: #6f42c1; margin-right: 8px; }
+        .common-unit-projects .cup-title .cup-unit-name {
+            background: #e8ecf1;
+            color: #1a3a6b;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+
+        .common-unit-projects .cup-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .common-unit-projects .cup-save-status {
+            font-size: 11px;
+            display: none;
+        }
+        .common-unit-projects .cup-save-status.show {
+            display: inline-block;
+        }
+        .common-unit-projects .cup-save-status.saving {
+            color: #ff9800;
+        }
+        .common-unit-projects .cup-save-status.saved {
+            color: #28a745;
+        }
+        .common-unit-projects .cup-save-status.error {
+            color: #dc3545;
+        }
+
+        .common-unit-projects .cup-save-btn {
+            padding: 4px 16px;
+            border-radius: 4px;
+            border: none;
+            background: #6f42c1;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+        .common-unit-projects .cup-save-btn:hover {
+            background: #5a32a3;
+        }
+        .common-unit-projects .cup-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .common-unit-projects .cup-save-btn.saved {
+            background: #6c757d;
+        }
+
+        .common-unit-projects .cup-textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 70px;
+            transition: border-color 0.2s;
+            color: #444;
+            line-height: 1.6;
+            background: #fafbfc;
+        }
+        .common-unit-projects .cup-textarea:focus {
+            outline: none;
+            border-color: #6f42c1;
+            box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.15);
+        }
+        .common-unit-projects .cup-textarea::placeholder {
+            color: #aaa;
+        }
+        .common-unit-projects .cup-textarea:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
         /* TEAM WORKLOAD BAR */
         .team-workload-bar {
             background: white;
@@ -414,7 +530,7 @@
             color: #aaa;
         }
 
-        /* WORK PLACE OTHER WORKLOAD BAR - BELOW TEAM WORKLOAD */
+        /* WORK PLACE OTHER WORKLOAD BAR */
         .wpow-bar {
             background: white;
             padding: 16px 22px;
@@ -896,6 +1012,7 @@
             .wpow-row { gap: 8px 12px; }
             .wpow-item input { width: 50px; }
             .wpow-other-item textarea { min-width: 80px; max-width: 150px; }
+            .common-unit-projects .cup-header { flex-direction: column; align-items: stretch; }
             #loginOverlay .login-box { padding: 30px 25px; margin: 15px; }
         }
         @media (max-width: 480px) {
@@ -909,6 +1026,7 @@
             .wpow-other-item textarea { min-width: 60px; max-width: 100px; font-size: 11px; }
             .header-stats .skill-group { gap: 4px; }
             .header-stats .skill-item { font-size: 10px; padding: 1px 6px; }
+            .common-unit-projects .cup-textarea { min-height: 50px; font-size: 12px; }
         }
     </style>
 </head>
@@ -984,6 +1102,28 @@
         </div>
     </div>
 
+    <!-- COMMON UNIT PROJECTS - Below Filters (Unit Level) -->
+    <div class="common-unit-projects" id="commonUnitProjects">
+        <div class="cup-container">
+            <div class="cup-header">
+                <div class="cup-title">
+                    <i class="fa fa-folder-open"></i> Common Unit Projects
+                    <span class="cup-unit-name" id="cupUnitName"></span>
+                </div>
+                <div class="cup-actions">
+                    <span class="cup-save-status" id="cupStatus"></span>
+                    <button class="cup-save-btn" id="cupSaveBtn" onclick="saveCommonUnitProjects()">
+                        <i class="fa fa-save"></i> Save
+                    </button>
+                </div>
+            </div>
+            <textarea class="cup-textarea" id="cupTextarea" 
+                      placeholder="No common projects for this unit..." 
+                      oninput="onCUPChange()"
+                      disabled></textarea>
+        </div>
+    </div>
+
     <!-- TEAM WORKLOAD BAR -->
     <div class="team-workload-bar" id="teamWorkloadBar">
         <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
@@ -1007,7 +1147,7 @@
         </div>
     </div>
 
-    <!-- WORK PLACE OTHER WORKLOAD BAR - BELOW TEAM WORKLOAD -->
+    <!-- WORK PLACE OTHER WORKLOAD BAR -->
     <div class="wpow-bar" id="wpowBar">
         <div class="wpow-title"><i class="fa fa-tasks"></i> 📋 Work Place Other Workload</div>
         <div class="wpow-row">
@@ -1072,7 +1212,7 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxSmf9kp6KtNeKg9R2lyjEFvqu0g33ubY9O83pJNqGj3HPejBkUki_DxqNBEuV4wzwJPA/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwgI6KTYxCdf7bZGGvfLngXFYsN2XqqQVDbPdWmA6SSoXXJTmEmgVAm7ByYPnBjbt1Z9g/exec';
 
 // ============================================================
 // EXPERTISE OPTIONS
@@ -1101,6 +1241,12 @@ let currentUnit = '';
 let currentWPOWData = {};
 let wpowChanged = false;
 let wpowSaving = false;
+
+// Common Unit Projects State
+let currentCommonUnit = '';
+let currentCommonProjects = '';
+let cupChanged = false;
+let cupSaving = false;
 
 // ============================================================
 // LOGIN SYSTEM
@@ -1369,6 +1515,7 @@ function applyFilters() {
     renderEmployees(filteredEmployees);
     updateDisplayStats();
     updateWorkplaceDropdown(unit);
+    updateCommonUnitProjects(unit);
     updateTeamWorkload(workplace);
     updateWPOWData(workplace);
     updateExpertiseStats(filteredEmployees);
@@ -1414,6 +1561,168 @@ function updateWorkplaceDropdown(unit) {
         }
         if (!found) select.value = '';
     }
+}
+
+// ============================================================
+// COMMON UNIT PROJECTS FUNCTIONS
+// ============================================================
+function updateCommonUnitProjects(unit) {
+    const container = document.getElementById('commonUnitProjects');
+    const textarea = document.getElementById('cupTextarea');
+    const unitName = document.getElementById('cupUnitName');
+    const saveBtn = document.getElementById('cupSaveBtn');
+    const statusEl = document.getElementById('cupStatus');
+    
+    // Reset state
+    cupChanged = false;
+    saveBtn.style.display = 'none';
+    saveBtn.classList.remove('saved');
+    saveBtn.disabled = false;
+    statusEl.className = 'cup-save-status';
+    
+    // If no unit selected or "All Units", hide the section
+    if (!unit || unit === '' || unit === 'All Units') {
+        container.classList.remove('visible');
+        return;
+    }
+    
+    const canEdit = loggedInUser && loggedInUser.role === 'Admin';
+    
+    // Show the section
+    container.classList.add('visible');
+    unitName.textContent = unit;
+    
+    // Disable textarea if not Admin
+    textarea.disabled = !canEdit;
+    if (!canEdit) {
+        textarea.title = 'Only Admin can edit Common Unit Projects';
+    }
+    
+    // Show loading state
+    textarea.value = 'Loading...';
+    statusEl.className = 'cup-save-status show saving';
+    statusEl.textContent = '⏳ Loading...';
+    
+    // Fetch data
+    callAPI('getCommonUnitProjects', { unit: unit })
+        .then(result => {
+            if (result.success) {
+                currentCommonUnit = unit;
+                currentCommonProjects = result.commonProjects || '';
+                textarea.value = currentCommonProjects;
+                
+                // Update status
+                if (result.found) {
+                    statusEl.className = 'cup-save-status show saved';
+                    statusEl.textContent = '✓ Loaded';
+                } else {
+                    statusEl.className = 'cup-save-status show';
+                    statusEl.textContent = 'ℹ️ No projects found - create new';
+                }
+                
+                // Reset changed state
+                cupChanged = false;
+                saveBtn.style.display = 'none';
+                
+                setTimeout(() => {
+                    if (!cupChanged) {
+                        statusEl.className = 'cup-save-status';
+                    }
+                }, 2000);
+            } else {
+                textarea.value = '';
+                statusEl.className = 'cup-save-status show error';
+                statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+                console.error('Error loading common unit projects:', result.error);
+            }
+        })
+        .catch(error => {
+            textarea.value = '';
+            statusEl.className = 'cup-save-status show error';
+            statusEl.textContent = '✗ Error loading data';
+            console.error('Error loading common unit projects:', error);
+        });
+}
+
+function onCUPChange() {
+    const textarea = document.getElementById('cupTextarea');
+    const saveBtn = document.getElementById('cupSaveBtn');
+    const statusEl = document.getElementById('cupStatus');
+    const newValue = textarea.value;
+    
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        saveBtn.style.display = 'none';
+        return;
+    }
+    
+    if (newValue !== currentCommonProjects) {
+        cupChanged = true;
+        saveBtn.style.display = 'inline-block';
+        statusEl.className = 'cup-save-status show saving';
+        statusEl.textContent = '⏳ Unsaved changes';
+    } else {
+        cupChanged = false;
+        saveBtn.style.display = 'none';
+        statusEl.className = 'cup-save-status';
+    }
+}
+
+function saveCommonUnitProjects() {
+    const textarea = document.getElementById('cupTextarea');
+    const saveBtn = document.getElementById('cupSaveBtn');
+    const statusEl = document.getElementById('cupStatus');
+    const unit = currentCommonUnit;
+    
+    if (!unit || unit === '') {
+        showToast('No unit selected', 'error');
+        return;
+    }
+    
+    if (cupSaving) return;
+    if (!cupChanged) return;
+    
+    const newValue = textarea.value;
+    
+    cupSaving = true;
+    saveBtn.disabled = true;
+    statusEl.className = 'cup-save-status show saving';
+    statusEl.textContent = '⏳ Saving...';
+    
+    callAPI('saveCommonUnitProjects', {
+        unit: unit,
+        commonProjects: newValue
+    })
+    .then(result => {
+        if (result.success) {
+            currentCommonProjects = newValue;
+            cupChanged = false;
+            saveBtn.style.display = 'none';
+            statusEl.className = 'cup-save-status show saved';
+            statusEl.textContent = '✓ Saved';
+            showToast('Common Unit Projects saved successfully!', 'success');
+        } else {
+            statusEl.className = 'cup-save-status show error';
+            statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+            showToast('Error saving: ' + (result.error || 'Unknown error'), 'error');
+        }
+        saveBtn.disabled = false;
+        cupSaving = false;
+        setTimeout(() => {
+            if (!cupChanged) {
+                statusEl.className = 'cup-save-status';
+            }
+        }, 3000);
+    })
+    .catch(error => {
+        statusEl.className = 'cup-save-status show error';
+        statusEl.textContent = '✗ Error';
+        saveBtn.disabled = false;
+        cupSaving = false;
+        showToast('Error saving: ' + error.message, 'error');
+        setTimeout(() => {
+            statusEl.className = 'cup-save-status';
+        }, 3000);
+    });
 }
 
 // ============================================================
