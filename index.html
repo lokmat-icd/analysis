@@ -295,7 +295,7 @@
             box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
         }
 
-        /* COMMON UNIT PROJECTS - Below Filters */
+        /* COMMON UNIT PROJECTS - Below Filters (Admin Only) */
         .common-unit-projects {
             background: white;
             padding: 16px 22px;
@@ -411,7 +411,7 @@
             opacity: 0.8;
         }
 
-        /* TEAM WORKLOAD BAR */
+        /* TEAM WORKLOAD BAR - View Only for All */
         .team-workload-bar {
             background: white;
             padding: 16px 22px;
@@ -530,7 +530,7 @@
             color: #aaa;
         }
 
-        /* WORK PLACE OTHER WORKLOAD BAR */
+        /* WORK PLACE OTHER WORKLOAD - Editable by Admin AND ICD Head */
         .wpow-bar {
             background: white;
             padding: 16px 22px;
@@ -1102,7 +1102,7 @@
         </div>
     </div>
 
-    <!-- COMMON UNIT PROJECTS - Below Filters (Unit Level) -->
+    <!-- COMMON UNIT PROJECTS - Admin Only -->
     <div class="common-unit-projects" id="commonUnitProjects">
         <div class="cup-container">
             <div class="cup-header">
@@ -1124,7 +1124,7 @@
         </div>
     </div>
 
-    <!-- TEAM WORKLOAD BAR -->
+    <!-- TEAM WORKLOAD BAR - View Only -->
     <div class="team-workload-bar" id="teamWorkloadBar">
         <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
         <div class="tw-container" id="twContainer">
@@ -1147,7 +1147,7 @@
         </div>
     </div>
 
-    <!-- WORK PLACE OTHER WORKLOAD BAR -->
+    <!-- WORK PLACE OTHER WORKLOAD - Editable by Admin AND ICD Head -->
     <div class="wpow-bar" id="wpowBar">
         <div class="wpow-title"><i class="fa fa-tasks"></i> 📋 Work Place Other Workload</div>
         <div class="wpow-row">
@@ -1564,7 +1564,7 @@ function updateWorkplaceDropdown(unit) {
 }
 
 // ============================================================
-// COMMON UNIT PROJECTS FUNCTIONS
+// COMMON UNIT PROJECTS FUNCTIONS - Admin Only
 // ============================================================
 function updateCommonUnitProjects(unit) {
     const container = document.getElementById('commonUnitProjects');
@@ -1586,6 +1586,7 @@ function updateCommonUnitProjects(unit) {
         return;
     }
     
+    // ✅ Admin Only for Common Unit Projects
     const canEdit = loggedInUser && loggedInUser.role === 'Admin';
     
     // Show the section
@@ -1617,7 +1618,7 @@ function updateCommonUnitProjects(unit) {
                     statusEl.textContent = '✓ Loaded';
                 } else {
                     statusEl.className = 'cup-save-status show';
-                    statusEl.textContent = 'ℹ️ No projects found - create new';
+                    statusEl.textContent = 'ℹ️ No projects found';
                 }
                 
                 // Reset changed state
@@ -1650,6 +1651,7 @@ function onCUPChange() {
     const statusEl = document.getElementById('cupStatus');
     const newValue = textarea.value;
     
+    // ✅ Admin Only
     if (!loggedInUser || loggedInUser.role !== 'Admin') {
         saveBtn.style.display = 'none';
         return;
@@ -1672,6 +1674,12 @@ function saveCommonUnitProjects() {
     const saveBtn = document.getElementById('cupSaveBtn');
     const statusEl = document.getElementById('cupStatus');
     const unit = currentCommonUnit;
+    
+    // ✅ Admin Only
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        showToast('Only Admin can save Common Unit Projects', 'error');
+        return;
+    }
     
     if (!unit || unit === '') {
         showToast('No unit selected', 'error');
@@ -1726,7 +1734,7 @@ function saveCommonUnitProjects() {
 }
 
 // ============================================================
-// UPDATE TEAM WORKLOAD
+// UPDATE TEAM WORKLOAD - View Only for All
 // ============================================================
 function updateTeamWorkload(workplace) {
     const bar = document.getElementById('teamWorkloadBar');
@@ -1780,6 +1788,7 @@ function updateTeamWorkload(workplace) {
                 
                 content.innerHTML = html;
                 
+                // ✅ WP Remark - Admin Only
                 const isAdmin = loggedInUser && loggedInUser.role === 'Admin';
                 
                 if (isAdmin) {
@@ -1803,7 +1812,7 @@ function updateTeamWorkload(workplace) {
 }
 
 // ============================================================
-// LOAD REMARK
+// LOAD REMARK - Admin Only
 // ============================================================
 function loadRemark(workplace) {
     const remarkInput = document.getElementById('remarkInput');
@@ -1843,6 +1852,12 @@ function onRemarkChange() {
     const saveBtn = document.getElementById('remarkSaveBtn');
     const newValue = remarkInput.value;
     
+    // ✅ Admin Only
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        saveBtn.disabled = true;
+        return;
+    }
+    
     if (newValue !== currentRemark) {
         remarkChanged = true;
         saveBtn.textContent = '💾 Save';
@@ -1861,6 +1876,12 @@ function saveRemark() {
     const saveBtn = document.getElementById('remarkSaveBtn');
     const fullText = remarkInput.value;
     const workplace = currentWorkplace;
+    
+    // ✅ Admin Only
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        showToast('Only Admin can save WP Remark', 'error');
+        return;
+    }
     
     if (!workplace || workplace === '') {
         return;
@@ -1901,7 +1922,7 @@ function saveRemark() {
 }
 
 // ============================================================
-// UPDATE WPOW DATA (Work Place Other Workload)
+// UPDATE WPOW DATA - Editable by Admin AND ICD Head
 // ============================================================
 function updateWPOWData(workplace) {
     const bar = document.getElementById('wpowBar');
@@ -1920,7 +1941,8 @@ function updateWPOWData(workplace) {
     
     bar.classList.add('visible');
     
-    const canEdit = loggedInUser && loggedInUser.role === 'Admin';
+    // ✅ Admin OR ICD Head can edit
+    const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
     
     callAPI('getWPOWData', { workplace: workplace })
         .then(result => {
@@ -1939,7 +1961,7 @@ function updateWPOWData(workplace) {
                 inputs.forEach(input => {
                     input.disabled = !canEdit;
                     if (!canEdit) {
-                        input.title = 'Only Admin can edit Work Place Other Workload';
+                        input.title = 'Only Admin and ICD Head can edit Work Place Other Workload';
                     }
                 });
                 
@@ -1991,13 +2013,14 @@ function updateWPOWData(workplace) {
 }
 
 // ============================================================
-// WPOW DATA - CHANGE HANDLER
+// WPOW DATA - CHANGE HANDLER (Admin OR ICD Head)
 // ============================================================
 function onWPOWChange() {
     const saveBtn = document.getElementById('wpowSaveBtn');
     const statusEl = document.getElementById('wpowStatus');
     
-    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+    // ✅ Admin OR ICD Head
+    if (!loggedInUser || (loggedInUser.role !== 'Admin' && loggedInUser.role !== 'ICD Head')) {
         saveBtn.style.display = 'none';
         return;
     }
@@ -2029,12 +2052,18 @@ function onWPOWChange() {
 }
 
 // ============================================================
-// SAVE WPOW DATA
+// SAVE WPOW DATA (Admin OR ICD Head)
 // ============================================================
 function saveWPOWData() {
     const saveBtn = document.getElementById('wpowSaveBtn');
     const statusEl = document.getElementById('wpowStatus');
     const workplace = currentWorkplace;
+    
+    // ✅ Admin OR ICD Head
+    if (!loggedInUser || (loggedInUser.role !== 'Admin' && loggedInUser.role !== 'ICD Head')) {
+        showToast('Only Admin and ICD Head can save Work Place Other Workload', 'error');
+        return;
+    }
     
     if (!workplace || workplace === '') return;
     if (wpowSaving) return;
@@ -2180,7 +2209,7 @@ function getExpertiseDescription(value) {
 }
 
 // ============================================================
-// SAVE EXPERTISE
+// SAVE EXPERTISE - Admin OR ICD Head
 // ============================================================
 function saveExpertise(empEmail, empName) {
     const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
@@ -2240,7 +2269,7 @@ function updateExpertiseDescription(cleanedEmail, value) {
 }
 
 // ============================================================
-// SAVE SPECIAL PROJECTS
+// SAVE SPECIAL PROJECTS - Admin OR ICD Head
 // ============================================================
 function saveSpecialProjects(empEmail, empName) {
     if (!empEmail || empEmail === '') {
