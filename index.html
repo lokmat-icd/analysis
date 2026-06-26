@@ -1,4 +1,4 @@
-<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyU0o3EKbCj8z04KQz6SZjkNwYtxQdrl4qTzg7YWM_H4w9gqD26xqsBxfEDWD5oyKsdlQ/exec'; -->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxSmf9kp6KtNeKg9R2lyjEFvqu0g33ubY9O83pJNqGj3HPejBkUki_DxqNBEuV4wzwJPA/exec'; -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -295,148 +295,6 @@
             box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
         }
 
-        /* UNIT WORKLOAD BAR */
-        .unit-workload-bar {
-            background: white;
-            padding: 12px 22px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            margin-bottom: 20px;
-            border-left: 4px solid #2a5298;
-            display: none;
-        }
-        .unit-workload-bar.visible { display: block; }
-        .unit-workload-bar .uw-title {
-            font-weight: 600;
-            color: #1a3a6b;
-            font-size: 14px;
-            margin-bottom: 6px;
-        }
-        .unit-workload-bar .uw-title i { color: #2a5298; margin-right: 6px; }
-        .unit-workload-bar .uw-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            gap: 8px 18px;
-            padding: 2px 0;
-        }
-        .unit-workload-bar .uw-row .uw-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-        .unit-workload-bar .uw-row .uw-item label {
-            font-weight: 600;
-            color: #555;
-            font-size: 12px;
-        }
-        .unit-workload-bar .uw-row .uw-item input {
-            padding: 3px 4px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 13px;
-            width: 55px;
-            text-align: center;
-            transition: border-color 0.2s;
-        }
-        .unit-workload-bar .uw-row .uw-item input:focus {
-            outline: none;
-            border-color: #2a5298;
-            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
-        }
-        .unit-workload-bar .uw-row .uw-item input:disabled {
-            background: #f5f5f5;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .unit-workload-bar .uw-row .uw-other-item {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            flex: 1;
-            min-width: 150px;
-        }
-        .unit-workload-bar .uw-row .uw-other-item label {
-            font-weight: 600;
-            color: #555;
-            font-size: 12px;
-            white-space: nowrap;
-        }
-        .unit-workload-bar .uw-row .uw-other-item textarea {
-            padding: 3px 6px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 13px;
-            font-family: inherit;
-            resize: none;
-            width: 100%;
-            min-width: 100px;
-            max-width: 250px;
-            min-height: 28px;
-            height: 28px;
-            transition: border-color 0.2s;
-            line-height: 1.4;
-        }
-        .unit-workload-bar .uw-row .uw-other-item textarea:focus {
-            outline: none;
-            border-color: #2a5298;
-            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
-        }
-        .unit-workload-bar .uw-row .uw-other-item textarea:disabled {
-            background: #f5f5f5;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-        .unit-workload-bar .uw-row .uw-other-item textarea::placeholder {
-            color: #aaa;
-        }
-        .unit-workload-bar .uw-save-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-left: 4px;
-        }
-        .uw-save-status {
-            font-size: 11px;
-            display: none;
-        }
-        .uw-save-status.show {
-            display: inline-block;
-        }
-        .uw-save-status.saving {
-            color: #ff9800;
-        }
-        .uw-save-status.saved {
-            color: #28a745;
-        }
-        .uw-save-status.error {
-            color: #dc3545;
-        }
-        .unit-workload-bar .uw-save-btn {
-            padding: 3px 14px;
-            border-radius: 4px;
-            border: none;
-            background: #28a745;
-            color: white;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: none;
-        }
-        .unit-workload-bar .uw-save-btn:hover {
-            background: #218838;
-        }
-        .unit-workload-bar .uw-save-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .unit-workload-bar .uw-save-btn.saved {
-            background: #6c757d;
-        }
-
         /* TEAM WORKLOAD BAR */
         .team-workload-bar {
             background: white;
@@ -554,6 +412,151 @@
         }
         .tw-remark-textarea::placeholder {
             color: #aaa;
+        }
+
+        /* WORK PLACE OTHER WORKLOAD BAR - BELOW TEAM WORKLOAD */
+        .wpow-bar {
+            background: white;
+            padding: 16px 22px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 20px;
+            border-left: 4px solid #ff9800;
+            display: none;
+        }
+        .wpow-bar.visible { display: block; }
+        .wpow-bar .wpow-title {
+            font-weight: 600;
+            color: #1a3a6b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        .wpow-bar .wpow-title i { color: #ff9800; margin-right: 6px; }
+        
+        .wpow-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 20px;
+            padding: 4px 0;
+        }
+        .wpow-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            white-space: nowrap;
+        }
+        .wpow-item label {
+            font-weight: 600;
+            color: #555;
+            font-size: 12px;
+            margin: 0;
+        }
+        .wpow-item input {
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 60px;
+            text-align: center;
+            transition: border-color 0.2s;
+        }
+        .wpow-item input:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        }
+        .wpow-item input:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .wpow-other-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+            min-width: 150px;
+        }
+        .wpow-other-item label {
+            font-weight: 600;
+            color: #555;
+            font-size: 12px;
+            white-space: nowrap;
+            margin: 0;
+        }
+        .wpow-other-item textarea {
+            padding: 4px 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: inherit;
+            resize: none;
+            width: 100%;
+            min-width: 100px;
+            max-width: 250px;
+            min-height: 30px;
+            height: 30px;
+            transition: border-color 0.2s;
+            line-height: 1.4;
+        }
+        .wpow-other-item textarea:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 2px rgba(42,82,152,0.1);
+        }
+        .wpow-other-item textarea:disabled {
+            background: #f5f5f5;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .wpow-other-item textarea::placeholder {
+            color: #aaa;
+        }
+        .wpow-save-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: 4px;
+        }
+        .wpow-save-status {
+            font-size: 11px;
+            display: none;
+        }
+        .wpow-save-status.show {
+            display: inline-block;
+        }
+        .wpow-save-status.saving {
+            color: #ff9800;
+        }
+        .wpow-save-status.saved {
+            color: #28a745;
+        }
+        .wpow-save-status.error {
+            color: #dc3545;
+        }
+        .wpow-save-btn {
+            padding: 4px 16px;
+            border-radius: 4px;
+            border: none;
+            background: #28a745;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: none;
+        }
+        .wpow-save-btn:hover {
+            background: #218838;
+        }
+        .wpow-save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .wpow-save-btn.saved {
+            background: #6c757d;
         }
 
         /* STATS BAR */
@@ -772,7 +775,7 @@
         }
         .workload-item .num { font-weight: 600; color: #1a3a6b; }
 
-        /* SPECIAL PROJECTS - FIXED */
+        /* SPECIAL PROJECTS */
         .special-projects-editable {
             margin-top: 10px;
             padding-top: 10px;
@@ -890,9 +893,9 @@
             .tw-container { flex-direction: column; }
             .tw-left, .tw-right { flex: none; }
             .tw-right { min-height: 120px; }
-            .unit-workload-bar .uw-row { gap: 6px 10px; }
-            .unit-workload-bar .uw-row .uw-item input { width: 45px; }
-            .unit-workload-bar .uw-row .uw-other-item textarea { min-width: 80px; max-width: 150px; }
+            .wpow-row { gap: 8px 12px; }
+            .wpow-item input { width: 50px; }
+            .wpow-other-item textarea { min-width: 80px; max-width: 150px; }
             #loginOverlay .login-box { padding: 30px 25px; margin: 15px; }
         }
         @media (max-width: 480px) {
@@ -901,9 +904,9 @@
             .tw-remark-header { flex-wrap: wrap; gap: 5px; }
             .special-projects-editable .sp-header { flex-wrap: wrap; gap: 5px; }
             .expertise-editable .exp-header { flex-wrap: wrap; gap: 5px; }
-            .unit-workload-bar .uw-row { gap: 4px 8px; }
-            .unit-workload-bar .uw-row .uw-item input { width: 40px; font-size: 11px; }
-            .unit-workload-bar .uw-row .uw-other-item textarea { min-width: 60px; max-width: 100px; font-size: 11px; }
+            .wpow-row { gap: 4px 8px; }
+            .wpow-item input { width: 45px; font-size: 11px; }
+            .wpow-other-item textarea { min-width: 60px; max-width: 100px; font-size: 11px; }
             .header-stats .skill-group { gap: 4px; }
             .header-stats .skill-item { font-size: 10px; padding: 1px 6px; }
         }
@@ -981,43 +984,6 @@
         </div>
     </div>
 
-    <!-- UNIT WORKLOAD BAR -->
-    <div class="unit-workload-bar" id="unitWorkloadBar">
-        <div class="uw-title"><i class="fa fa-building"></i> 📋 Unit Workload</div>
-        <div class="uw-row">
-            <div class="uw-item">
-                <label>Daily Ads</label>
-                <input type="number" id="uwDailyAds" min="0" step="1" placeholder="0" oninput="onUWChange()">
-            </div>
-            <div class="uw-item">
-                <label>AnniversaryPG</label>
-                <input type="number" id="uwAnniversaryPG" min="0" step="1" placeholder="0" oninput="onUWChange()">
-            </div>
-            <div class="uw-item">
-                <label>AdvertorialPG</label>
-                <input type="number" id="uwAdvertorialPG" min="0" step="1" placeholder="0" oninput="onUWChange()">
-            </div>
-            <div class="uw-item">
-                <label>Diwali Issue</label>
-                <input type="number" id="uwDiwaliIssue" min="0" step="1" placeholder="0" oninput="onUWChange()">
-            </div>
-            <div class="uw-item">
-                <label>CT-Book</label>
-                <input type="number" id="uwCtBook" min="0" step="1" placeholder="0" oninput="onUWChange()">
-            </div>
-            <div class="uw-other-item">
-                <label>Other</label>
-                <textarea id="uwOther" placeholder="..." oninput="onUWChange()"></textarea>
-            </div>
-            <div class="uw-save-area">
-                <span class="uw-save-status" id="uwStatus"></span>
-                <button class="uw-save-btn" id="uwSaveBtn" onclick="saveUWData()">
-                    <i class="fa fa-save"></i> Save
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- TEAM WORKLOAD BAR -->
     <div class="team-workload-bar" id="teamWorkloadBar">
         <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
@@ -1037,6 +1003,43 @@
                 <textarea class="tw-remark-textarea" id="remarkInput" 
                           placeholder="Workplace remarks and analysis will appear here..." 
                           oninput="onRemarkChange()"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <!-- WORK PLACE OTHER WORKLOAD BAR - BELOW TEAM WORKLOAD -->
+    <div class="wpow-bar" id="wpowBar">
+        <div class="wpow-title"><i class="fa fa-tasks"></i> 📋 Work Place Other Workload</div>
+        <div class="wpow-row">
+            <div class="wpow-item">
+                <label>Daily Ads</label>
+                <input type="number" id="wpowDailyAds" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+            </div>
+            <div class="wpow-item">
+                <label>AnniversaryPG</label>
+                <input type="number" id="wpowAnniversaryPG" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+            </div>
+            <div class="wpow-item">
+                <label>AdvertorialPG</label>
+                <input type="number" id="wpowAdvertorialPG" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+            </div>
+            <div class="wpow-item">
+                <label>Diwali Issue</label>
+                <input type="number" id="wpowDiwaliIssue" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+            </div>
+            <div class="wpow-item">
+                <label>CT-Book</label>
+                <input type="number" id="wpowCtBook" min="0" step="1" placeholder="0" oninput="onWPOWChange()">
+            </div>
+            <div class="wpow-other-item">
+                <label>Other</label>
+                <textarea id="wpowOther" placeholder="..." oninput="onWPOWChange()"></textarea>
+            </div>
+            <div class="wpow-save-area">
+                <span class="wpow-save-status" id="wpowStatus"></span>
+                <button class="wpow-save-btn" id="wpowSaveBtn" onclick="saveWPOWData()">
+                    <i class="fa fa-save"></i> Save
+                </button>
             </div>
         </div>
     </div>
@@ -1069,7 +1072,7 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyU0o3EKbCj8z04KQz6SZjkNwYtxQdrl4qTzg7YWM_H4w9gqD26xqsBxfEDWD5oyKsdlQ/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxSmf9kp6KtNeKg9R2lyjEFvqu0g33ubY9O83pJNqGj3HPejBkUki_DxqNBEuV4wzwJPA/exec';
 
 // ============================================================
 // EXPERTISE OPTIONS
@@ -1095,9 +1098,9 @@ let remarkChanged = false;
 let remarkSaving = false;
 let loggedInUser = null;
 let currentUnit = '';
-let currentUWData = {};
-let uwChanged = false;
-let uwSaving = false;
+let currentWPOWData = {};
+let wpowChanged = false;
+let wpowSaving = false;
 
 // ============================================================
 // LOGIN SYSTEM
@@ -1366,8 +1369,8 @@ function applyFilters() {
     renderEmployees(filteredEmployees);
     updateDisplayStats();
     updateWorkplaceDropdown(unit);
-    updateUWData(workplace);
     updateTeamWorkload(workplace);
+    updateWPOWData(workplace);
     updateExpertiseStats(filteredEmployees);
 }
 
@@ -1414,207 +1417,6 @@ function updateWorkplaceDropdown(unit) {
 }
 
 // ============================================================
-// UPDATE UW DATA
-// ============================================================
-function updateUWData(workplace) {
-    const bar = document.getElementById('unitWorkloadBar');
-    const saveBtn = document.getElementById('uwSaveBtn');
-    const statusEl = document.getElementById('uwStatus');
-    
-    uwChanged = false;
-    saveBtn.style.display = 'none';
-    saveBtn.classList.remove('saved');
-    saveBtn.disabled = false;
-    
-    if (!workplace || workplace === '') {
-        bar.classList.remove('visible');
-        return;
-    }
-    
-    bar.classList.add('visible');
-    
-    const canEdit = loggedInUser && loggedInUser.role === 'Admin';
-    
-    callAPI('getUWData', { workplace: workplace })
-        .then(result => {
-            if (result.success) {
-                const data = result.data || {};
-                currentUWData = data;
-                
-                document.getElementById('uwDailyAds').value = data.dailyAds || 0;
-                document.getElementById('uwAnniversaryPG').value = data.anniversaryPG || 0;
-                document.getElementById('uwAdvertorialPG').value = data.advertorialPG || 0;
-                document.getElementById('uwDiwaliIssue').value = data.diwaliIssue || 0;
-                document.getElementById('uwCtBook').value = data.ctBook || 0;
-                document.getElementById('uwOther').value = data.other || '';
-                
-                const inputs = document.querySelectorAll('.uw-item input, .uw-other-item textarea');
-                inputs.forEach(input => {
-                    input.disabled = !canEdit;
-                    if (!canEdit) {
-                        input.title = 'Only Admin can edit Unit Workload';
-                    }
-                });
-                
-                if (!canEdit) {
-                    saveBtn.style.display = 'none';
-                    statusEl.className = 'uw-save-status';
-                } else {
-                    statusEl.className = 'uw-save-status show saved';
-                    statusEl.textContent = '✓ Loaded';
-                    setTimeout(() => {
-                        statusEl.className = 'uw-save-status';
-                    }, 1500);
-                }
-                
-                uwChanged = false;
-                saveBtn.style.display = 'none';
-                
-            } else {
-                console.error('Error loading UW data:', result.error);
-                document.getElementById('uwDailyAds').value = 0;
-                document.getElementById('uwAnniversaryPG').value = 0;
-                document.getElementById('uwAdvertorialPG').value = 0;
-                document.getElementById('uwDiwaliIssue').value = 0;
-                document.getElementById('uwCtBook').value = 0;
-                document.getElementById('uwOther').value = '';
-                
-                const inputs = document.querySelectorAll('.uw-item input, .uw-other-item textarea');
-                inputs.forEach(input => {
-                    input.disabled = !canEdit;
-                });
-                saveBtn.style.display = 'none';
-            }
-        })
-        .catch(error => {
-            console.error('Error loading UW data:', error);
-            document.getElementById('uwDailyAds').value = 0;
-            document.getElementById('uwAnniversaryPG').value = 0;
-            document.getElementById('uwAdvertorialPG').value = 0;
-            document.getElementById('uwDiwaliIssue').value = 0;
-            document.getElementById('uwCtBook').value = 0;
-            document.getElementById('uwOther').value = '';
-            
-            const inputs = document.querySelectorAll('.uw-item input, .uw-other-item textarea');
-            inputs.forEach(input => {
-                input.disabled = !canEdit;
-            });
-            saveBtn.style.display = 'none';
-        });
-}
-
-// ============================================================
-// UW DATA - CHANGE HANDLER
-// ============================================================
-function onUWChange() {
-    const saveBtn = document.getElementById('uwSaveBtn');
-    const statusEl = document.getElementById('uwStatus');
-    
-    if (!loggedInUser || loggedInUser.role !== 'Admin') {
-        saveBtn.style.display = 'none';
-        return;
-    }
-    
-    const dailyAds = parseInt(document.getElementById('uwDailyAds').value) || 0;
-    const anniversaryPG = parseInt(document.getElementById('uwAnniversaryPG').value) || 0;
-    const advertorialPG = parseInt(document.getElementById('uwAdvertorialPG').value) || 0;
-    const diwaliIssue = parseInt(document.getElementById('uwDiwaliIssue').value) || 0;
-    const ctBook = parseInt(document.getElementById('uwCtBook').value) || 0;
-    const other = document.getElementById('uwOther').value || '';
-    
-    const changed = (dailyAds !== (currentUWData.dailyAds || 0)) ||
-                    (anniversaryPG !== (currentUWData.anniversaryPG || 0)) ||
-                    (advertorialPG !== (currentUWData.advertorialPG || 0)) ||
-                    (diwaliIssue !== (currentUWData.diwaliIssue || 0)) ||
-                    (ctBook !== (currentUWData.ctBook || 0)) ||
-                    (other !== (currentUWData.other || ''));
-    
-    if (changed) {
-        uwChanged = true;
-        saveBtn.style.display = 'inline-block';
-        statusEl.className = 'uw-save-status show saving';
-        statusEl.textContent = '⏳ Unsaved changes';
-    } else {
-        uwChanged = false;
-        saveBtn.style.display = 'none';
-        statusEl.className = 'uw-save-status';
-    }
-}
-
-// ============================================================
-// SAVE UW DATA
-// ============================================================
-function saveUWData() {
-    const saveBtn = document.getElementById('uwSaveBtn');
-    const statusEl = document.getElementById('uwStatus');
-    const workplace = currentWorkplace;
-    
-    if (!workplace || workplace === '') return;
-    if (uwSaving) return;
-    if (!uwChanged) return;
-    
-    const dailyAds = parseInt(document.getElementById('uwDailyAds').value) || 0;
-    const anniversaryPG = parseInt(document.getElementById('uwAnniversaryPG').value) || 0;
-    const advertorialPG = parseInt(document.getElementById('uwAdvertorialPG').value) || 0;
-    const diwaliIssue = parseInt(document.getElementById('uwDiwaliIssue').value) || 0;
-    const ctBook = parseInt(document.getElementById('uwCtBook').value) || 0;
-    const other = document.getElementById('uwOther').value || '';
-    
-    uwSaving = true;
-    saveBtn.disabled = true;
-    statusEl.className = 'uw-save-status show saving';
-    statusEl.textContent = '⏳ Saving...';
-    
-    callAPI('saveUWData', {
-        workplace: workplace,
-        dailyAds: dailyAds,
-        anniversaryPG: anniversaryPG,
-        advertorialPG: advertorialPG,
-        diwaliIssue: diwaliIssue,
-        ctBook: ctBook,
-        other: other
-    })
-    .then(result => {
-        if (result.success) {
-            currentUWData = {
-                dailyAds: dailyAds,
-                anniversaryPG: anniversaryPG,
-                advertorialPG: advertorialPG,
-                diwaliIssue: diwaliIssue,
-                ctBook: ctBook,
-                other: other
-            };
-            uwChanged = false;
-            saveBtn.style.display = 'none';
-            statusEl.className = 'uw-save-status show saved';
-            statusEl.textContent = '✓ Saved';
-            showToast('Unit Workload saved successfully!', 'success');
-        } else {
-            statusEl.className = 'uw-save-status show error';
-            statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
-            showToast('Error saving unit workload', 'error');
-        }
-        saveBtn.disabled = false;
-        uwSaving = false;
-        setTimeout(() => {
-            if (!uwChanged) {
-                statusEl.className = 'uw-save-status';
-            }
-        }, 3000);
-    })
-    .catch(error => {
-        statusEl.className = 'uw-save-status show error';
-        statusEl.textContent = '✗ Error';
-        saveBtn.disabled = false;
-        uwSaving = false;
-        showToast('Error saving: ' + error.message, 'error');
-        setTimeout(() => {
-            statusEl.className = 'uw-save-status';
-        }, 3000);
-    });
-}
-
-// ============================================================
 // UPDATE TEAM WORKLOAD
 // ============================================================
 function updateTeamWorkload(workplace) {
@@ -1630,7 +1432,7 @@ function updateTeamWorkload(workplace) {
         return;
     }
     
-    callAPI('getUWData', { workplace: workplace })
+    callAPI('getWPOWData', { workplace: workplace })
         .then(result => {
             if (result.success && result.data && result.data.teamWorkload) {
                 const teamWorkload = result.data.teamWorkload;
@@ -1790,6 +1592,207 @@ function saveRemark() {
 }
 
 // ============================================================
+// UPDATE WPOW DATA (Work Place Other Workload)
+// ============================================================
+function updateWPOWData(workplace) {
+    const bar = document.getElementById('wpowBar');
+    const saveBtn = document.getElementById('wpowSaveBtn');
+    const statusEl = document.getElementById('wpowStatus');
+    
+    wpowChanged = false;
+    saveBtn.style.display = 'none';
+    saveBtn.classList.remove('saved');
+    saveBtn.disabled = false;
+    
+    if (!workplace || workplace === '') {
+        bar.classList.remove('visible');
+        return;
+    }
+    
+    bar.classList.add('visible');
+    
+    const canEdit = loggedInUser && loggedInUser.role === 'Admin';
+    
+    callAPI('getWPOWData', { workplace: workplace })
+        .then(result => {
+            if (result.success) {
+                const data = result.data || {};
+                currentWPOWData = data;
+                
+                document.getElementById('wpowDailyAds').value = data.dailyAds || 0;
+                document.getElementById('wpowAnniversaryPG').value = data.anniversaryPG || 0;
+                document.getElementById('wpowAdvertorialPG').value = data.advertorialPG || 0;
+                document.getElementById('wpowDiwaliIssue').value = data.diwaliIssue || 0;
+                document.getElementById('wpowCtBook').value = data.ctBook || 0;
+                document.getElementById('wpowOther').value = data.other || '';
+                
+                const inputs = document.querySelectorAll('.wpow-item input, .wpow-other-item textarea');
+                inputs.forEach(input => {
+                    input.disabled = !canEdit;
+                    if (!canEdit) {
+                        input.title = 'Only Admin can edit Work Place Other Workload';
+                    }
+                });
+                
+                if (!canEdit) {
+                    saveBtn.style.display = 'none';
+                    statusEl.className = 'wpow-save-status';
+                } else {
+                    statusEl.className = 'wpow-save-status show saved';
+                    statusEl.textContent = '✓ Loaded';
+                    setTimeout(() => {
+                        statusEl.className = 'wpow-save-status';
+                    }, 1500);
+                }
+                
+                wpowChanged = false;
+                saveBtn.style.display = 'none';
+                
+            } else {
+                console.error('Error loading WPOW data:', result.error);
+                document.getElementById('wpowDailyAds').value = 0;
+                document.getElementById('wpowAnniversaryPG').value = 0;
+                document.getElementById('wpowAdvertorialPG').value = 0;
+                document.getElementById('wpowDiwaliIssue').value = 0;
+                document.getElementById('wpowCtBook').value = 0;
+                document.getElementById('wpowOther').value = '';
+                
+                const inputs = document.querySelectorAll('.wpow-item input, .wpow-other-item textarea');
+                inputs.forEach(input => {
+                    input.disabled = !canEdit;
+                });
+                saveBtn.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error loading WPOW data:', error);
+            document.getElementById('wpowDailyAds').value = 0;
+            document.getElementById('wpowAnniversaryPG').value = 0;
+            document.getElementById('wpowAdvertorialPG').value = 0;
+            document.getElementById('wpowDiwaliIssue').value = 0;
+            document.getElementById('wpowCtBook').value = 0;
+            document.getElementById('wpowOther').value = '';
+            
+            const inputs = document.querySelectorAll('.wpow-item input, .wpow-other-item textarea');
+            inputs.forEach(input => {
+                input.disabled = !canEdit;
+            });
+            saveBtn.style.display = 'none';
+        });
+}
+
+// ============================================================
+// WPOW DATA - CHANGE HANDLER
+// ============================================================
+function onWPOWChange() {
+    const saveBtn = document.getElementById('wpowSaveBtn');
+    const statusEl = document.getElementById('wpowStatus');
+    
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        saveBtn.style.display = 'none';
+        return;
+    }
+    
+    const dailyAds = parseInt(document.getElementById('wpowDailyAds').value) || 0;
+    const anniversaryPG = parseInt(document.getElementById('wpowAnniversaryPG').value) || 0;
+    const advertorialPG = parseInt(document.getElementById('wpowAdvertorialPG').value) || 0;
+    const diwaliIssue = parseInt(document.getElementById('wpowDiwaliIssue').value) || 0;
+    const ctBook = parseInt(document.getElementById('wpowCtBook').value) || 0;
+    const other = document.getElementById('wpowOther').value || '';
+    
+    const changed = (dailyAds !== (currentWPOWData.dailyAds || 0)) ||
+                    (anniversaryPG !== (currentWPOWData.anniversaryPG || 0)) ||
+                    (advertorialPG !== (currentWPOWData.advertorialPG || 0)) ||
+                    (diwaliIssue !== (currentWPOWData.diwaliIssue || 0)) ||
+                    (ctBook !== (currentWPOWData.ctBook || 0)) ||
+                    (other !== (currentWPOWData.other || ''));
+    
+    if (changed) {
+        wpowChanged = true;
+        saveBtn.style.display = 'inline-block';
+        statusEl.className = 'wpow-save-status show saving';
+        statusEl.textContent = '⏳ Unsaved changes';
+    } else {
+        wpowChanged = false;
+        saveBtn.style.display = 'none';
+        statusEl.className = 'wpow-save-status';
+    }
+}
+
+// ============================================================
+// SAVE WPOW DATA
+// ============================================================
+function saveWPOWData() {
+    const saveBtn = document.getElementById('wpowSaveBtn');
+    const statusEl = document.getElementById('wpowStatus');
+    const workplace = currentWorkplace;
+    
+    if (!workplace || workplace === '') return;
+    if (wpowSaving) return;
+    if (!wpowChanged) return;
+    
+    const dailyAds = parseInt(document.getElementById('wpowDailyAds').value) || 0;
+    const anniversaryPG = parseInt(document.getElementById('wpowAnniversaryPG').value) || 0;
+    const advertorialPG = parseInt(document.getElementById('wpowAdvertorialPG').value) || 0;
+    const diwaliIssue = parseInt(document.getElementById('wpowDiwaliIssue').value) || 0;
+    const ctBook = parseInt(document.getElementById('wpowCtBook').value) || 0;
+    const other = document.getElementById('wpowOther').value || '';
+    
+    wpowSaving = true;
+    saveBtn.disabled = true;
+    statusEl.className = 'wpow-save-status show saving';
+    statusEl.textContent = '⏳ Saving...';
+    
+    callAPI('saveWPOWData', {
+        workplace: workplace,
+        dailyAds: dailyAds,
+        anniversaryPG: anniversaryPG,
+        advertorialPG: advertorialPG,
+        diwaliIssue: diwaliIssue,
+        ctBook: ctBook,
+        other: other
+    })
+    .then(result => {
+        if (result.success) {
+            currentWPOWData = {
+                dailyAds: dailyAds,
+                anniversaryPG: anniversaryPG,
+                advertorialPG: advertorialPG,
+                diwaliIssue: diwaliIssue,
+                ctBook: ctBook,
+                other: other
+            };
+            wpowChanged = false;
+            saveBtn.style.display = 'none';
+            statusEl.className = 'wpow-save-status show saved';
+            statusEl.textContent = '✓ Saved';
+            showToast('Work Place Other Workload saved successfully!', 'success');
+        } else {
+            statusEl.className = 'wpow-save-status show error';
+            statusEl.textContent = '✗ Error: ' + (result.error || 'Unknown error');
+            showToast('Error saving workload', 'error');
+        }
+        saveBtn.disabled = false;
+        wpowSaving = false;
+        setTimeout(() => {
+            if (!wpowChanged) {
+                statusEl.className = 'wpow-save-status';
+            }
+        }, 3000);
+    })
+    .catch(error => {
+        statusEl.className = 'wpow-save-status show error';
+        statusEl.textContent = '✗ Error';
+        saveBtn.disabled = false;
+        wpowSaving = false;
+        showToast('Error saving: ' + error.message, 'error');
+        setTimeout(() => {
+            statusEl.className = 'wpow-save-status';
+        }, 3000);
+    });
+}
+
+// ============================================================
 // UPDATE EXPERTISE STATS
 // ============================================================
 function updateExpertiseStats(employees) {
@@ -1928,7 +1931,7 @@ function updateExpertiseDescription(cleanedEmail, value) {
 }
 
 // ============================================================
-// SAVE SPECIAL PROJECTS - FIXED VERSION
+// SAVE SPECIAL PROJECTS
 // ============================================================
 function saveSpecialProjects(empEmail, empName) {
     if (!empEmail || empEmail === '') {
@@ -1937,7 +1940,6 @@ function saveSpecialProjects(empEmail, empName) {
         return;
     }
     
-    // Clean the email for use in element IDs
     const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
     const spId = 'sp_' + cleanedEmail;
     
@@ -1968,7 +1970,6 @@ function saveSpecialProjects(empEmail, empName) {
         console.log('Save result:', result);
         
         if (result.success) {
-            // Update local data
             const emp = allEmployees.find(e => e.Email === empEmail);
             if (emp) {
                 emp.SpecialProjects = { special_projects: newText };
@@ -1992,9 +1993,6 @@ function saveSpecialProjects(empEmail, empName) {
     });
 }
 
-// ============================================================
-// ON SPECIAL PROJECT CHANGE - FIXED
-// ============================================================
 function onSpecialProjectChange(empEmail) {
     if (!empEmail) return;
     
@@ -2060,7 +2058,7 @@ function renderEmployees(employees) {
 }
 
 // ============================================================
-// BUILD EMPLOYEE CARD - FIXED VERSION
+// BUILD EMPLOYEE CARD
 // ============================================================
 function buildEmployeeCard(emp) {
     let roleClass = 'unknown';
@@ -2085,7 +2083,6 @@ function buildEmployeeCard(emp) {
     }
     detailHtml += '</div>';
     
-    // ✅ FIXED: Consistent ID generation using email
     const empEmail = emp.Email || '';
     const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
     const spId = 'sp_' + cleanedEmail;
@@ -2158,7 +2155,6 @@ function buildEmployeeCard(emp) {
         }
     }
     
-    // ✅ FIXED: Special Projects - uses cleaned email for IDs
     const projectText = getCleanSpecialProjects(emp);
     
     let specialHtml = `
