@@ -1,5 +1,4 @@
-<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzsiZGHKKgPzcKYTwW7nQ8b2_bGVdOOrtbOlFdSf0Vx48dShYgG1TWMIT-4a47fxTqQ-Q/exec';
- -->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyU0o3EKbCj8z04KQz6SZjkNwYtxQdrl4qTzg7YWM_H4w9gqD26xqsBxfEDWD5oyKsdlQ/exec'; -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -296,7 +295,7 @@
             box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
         }
 
-        /* UNIT WORKLOAD BAR - INLINE */
+        /* UNIT WORKLOAD BAR */
         .unit-workload-bar {
             background: white;
             padding: 12px 22px;
@@ -438,7 +437,7 @@
             background: #6c757d;
         }
 
-        /* TEAM WORKLOAD BAR - Two Columns */
+        /* TEAM WORKLOAD BAR */
         .team-workload-bar {
             background: white;
             padding: 16px 22px;
@@ -502,7 +501,6 @@
             color: #666;
         }
         
-        /* Remark section */
         .tw-remark-header {
             display: flex;
             justify-content: space-between;
@@ -675,7 +673,7 @@
             margin: 0 4px;
         }
 
-        /* Expertise - Dropdown Style with Auto-Save */
+        /* Expertise */
         .expertise-editable {
             margin-top: 8px;
             padding-top: 8px;
@@ -713,9 +711,6 @@
             background: #f5f5f5;
             cursor: not-allowed;
             opacity: 0.7;
-        }
-        .expertise-editable .exp-select option {
-            padding: 4px 8px;
         }
         .exp-save-status {
             font-size: 11px;
@@ -777,6 +772,7 @@
         }
         .workload-item .num { font-weight: 600; color: #1a3a6b; }
 
+        /* SPECIAL PROJECTS - FIXED */
         .special-projects-editable {
             margin-top: 10px;
             padding-top: 10px;
@@ -804,7 +800,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
-            display: none;
         }
         .special-projects-editable .sp-header .sp-save-btn:hover {
             background: #218838;
@@ -815,9 +810,6 @@
         }
         .special-projects-editable .sp-header .sp-save-btn.saved {
             background: #6c757d;
-        }
-        .special-projects-editable .sp-header .sp-save-btn.show {
-            display: inline-block;
         }
         .special-projects-editable .sp-textarea {
             width: 100%;
@@ -989,7 +981,7 @@
         </div>
     </div>
 
-    <!-- UNIT WORKLOAD BAR - INLINE -->
+    <!-- UNIT WORKLOAD BAR -->
     <div class="unit-workload-bar" id="unitWorkloadBar">
         <div class="uw-title"><i class="fa fa-building"></i> 📋 Unit Workload</div>
         <div class="uw-row">
@@ -1026,7 +1018,7 @@
         </div>
     </div>
 
-    <!-- TEAM WORKLOAD BAR - Two Columns -->
+    <!-- TEAM WORKLOAD BAR -->
     <div class="team-workload-bar" id="teamWorkloadBar">
         <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
         <div class="tw-container" id="twContainer">
@@ -1077,7 +1069,7 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzsiZGHKKgPzcKYTwW7nQ8b2_bGVdOOrtbOlFdSf0Vx48dShYgG1TWMIT-4a47fxTqQ-Q/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbyU0o3EKbCj8z04KQz6SZjkNwYtxQdrl4qTzg7YWM_H4w9gqD26xqsBxfEDWD5oyKsdlQ/exec';
 
 // ============================================================
 // EXPERTISE OPTIONS
@@ -1250,7 +1242,7 @@ async function loadAllData() {
 }
 
 // ============================================================
-// UPDATE HEADER STATS (Admin only - with Skill Strength)
+// UPDATE HEADER STATS
 // ============================================================
 function updateHeaderStats() {
     const container = document.getElementById('headerCenter');
@@ -1260,7 +1252,6 @@ function updateHeaderStats() {
         let total = allEmployees.length;
         let fta = 0, vou = 0, cnf = 0, icdHead = 0;
         
-        // Count expertise
         const expertiseCounts = {
             'Allrounder': 0,
             'Event/Advt': 0,
@@ -1275,13 +1266,11 @@ function updateHeaderStats() {
             else if (emp.Type === 'CNF') cnf++;
             if (emp.Role === 'ICD Head') icdHead++;
             
-            // Count expertise
             if (emp.Expertise && expertiseCounts.hasOwnProperty(emp.Expertise)) {
                 expertiseCounts[emp.Expertise]++;
             }
         });
         
-        // Build Skill Strength HTML
         let skillHtml = '';
         const skillOrder = ['Allrounder', 'Event/Advt', 'Prepress', 'Photo', 'Pagination'];
         skillOrder.forEach(skill => {
@@ -1315,7 +1304,7 @@ function updateHeaderStats() {
 }
 
 // ============================================================
-// POPULATE UNIT DROPDOWN - Admin
+// POPULATE UNIT DROPDOWN
 // ============================================================
 function populateUnitDropdown(units) {
     const select = document.getElementById('unitFilter');
@@ -1329,9 +1318,6 @@ function populateUnitDropdown(units) {
     });
 }
 
-// ============================================================
-// POPULATE UNIT DROPDOWN - ICD Head (only their unit)
-// ============================================================
 function populateUnitDropdownForICDHead(unit) {
     const select = document.getElementById('unitFilter');
     select.innerHTML = '';
@@ -1435,13 +1421,11 @@ function updateUWData(workplace) {
     const saveBtn = document.getElementById('uwSaveBtn');
     const statusEl = document.getElementById('uwStatus');
     
-    // Reset UW changed state
     uwChanged = false;
     saveBtn.style.display = 'none';
     saveBtn.classList.remove('saved');
     saveBtn.disabled = false;
     
-    // If no workplace selected, hide the bar
     if (!workplace || workplace === '') {
         bar.classList.remove('visible');
         return;
@@ -1449,10 +1433,8 @@ function updateUWData(workplace) {
     
     bar.classList.add('visible');
     
-    // Check if user can edit (Admin only)
     const canEdit = loggedInUser && loggedInUser.role === 'Admin';
     
-    // Load UW data
     callAPI('getUWData', { workplace: workplace })
         .then(result => {
             if (result.success) {
@@ -1466,7 +1448,6 @@ function updateUWData(workplace) {
                 document.getElementById('uwCtBook').value = data.ctBook || 0;
                 document.getElementById('uwOther').value = data.other || '';
                 
-                // Enable/disable fields based on role
                 const inputs = document.querySelectorAll('.uw-item input, .uw-other-item textarea');
                 inputs.forEach(input => {
                     input.disabled = !canEdit;
@@ -1486,7 +1467,6 @@ function updateUWData(workplace) {
                     }, 1500);
                 }
                 
-                // Reset changed state after loading
                 uwChanged = false;
                 saveBtn.style.display = 'none';
                 
@@ -1530,13 +1510,11 @@ function onUWChange() {
     const saveBtn = document.getElementById('uwSaveBtn');
     const statusEl = document.getElementById('uwStatus');
     
-    // Only show save button if user is Admin
     if (!loggedInUser || loggedInUser.role !== 'Admin') {
         saveBtn.style.display = 'none';
         return;
     }
     
-    // Check if any value has changed
     const dailyAds = parseInt(document.getElementById('uwDailyAds').value) || 0;
     const anniversaryPG = parseInt(document.getElementById('uwAnniversaryPG').value) || 0;
     const advertorialPG = parseInt(document.getElementById('uwAdvertorialPG').value) || 0;
@@ -1637,7 +1615,7 @@ function saveUWData() {
 }
 
 // ============================================================
-// UPDATE TEAM WORKLOAD - From UW sheet (Column B)
+// UPDATE TEAM WORKLOAD
 // ============================================================
 function updateTeamWorkload(workplace) {
     const bar = document.getElementById('teamWorkloadBar');
@@ -1647,13 +1625,11 @@ function updateTeamWorkload(workplace) {
     const saveBtn = document.getElementById('remarkSaveBtn');
     const remarkSection = document.getElementById('twRight');
     
-    // If no workplace is selected, hide the bar
     if (!workplace || workplace === '') {
         bar.classList.remove('visible');
         return;
     }
     
-    // Load Team Workload from UW sheet
     callAPI('getUWData', { workplace: workplace })
         .then(result => {
             if (result.success && result.data && result.data.teamWorkload) {
@@ -1666,7 +1642,6 @@ function updateTeamWorkload(workplace) {
                 
                 const editions = Object.keys(teamWorkload);
                 
-                // Build the content HTML
                 let html = '<div class="tw-editions">';
                 let grandTotal = 0;
                 
@@ -1689,19 +1664,16 @@ function updateTeamWorkload(workplace) {
                 html += '</div>';
                 html += `<div class="tw-total">📄 Total: <strong>${grandTotal}</strong> pages across ${editions.length} editions</div>`;
                 
-                // Count employees in this workplace
                 const workplaceEmployees = allEmployees.filter(emp => emp.WorkPlace === workplace);
                 html += `<div class="tw-employees">👥 ${workplaceEmployees.length} employees in this workplace</div>`;
                 
                 content.innerHTML = html;
                 
-                // Show/hide remark section based on role
                 const isAdmin = loggedInUser && loggedInUser.role === 'Admin';
                 
                 if (isAdmin) {
                     container.classList.remove('full-width');
                     remarkSection.style.display = 'flex';
-                    // Load remark from UW sheet (WP Remark)
                     loadRemark(workplace);
                 } else {
                     container.classList.add('full-width');
@@ -1720,7 +1692,7 @@ function updateTeamWorkload(workplace) {
 }
 
 // ============================================================
-// LOAD REMARK (From UW sheet - WP Remark column)
+// LOAD REMARK
 // ============================================================
 function loadRemark(workplace) {
     const remarkInput = document.getElementById('remarkInput');
@@ -1896,11 +1868,12 @@ function getExpertiseDescription(value) {
 }
 
 // ============================================================
-// SAVE EXPERTISE - AUTO SAVE ON DROPDOWN CHANGE
+// SAVE EXPERTISE
 // ============================================================
 function saveExpertise(empEmail, empName) {
-    const select = document.getElementById('exp_select_' + empEmail);
-    const statusEl = document.getElementById('exp_status_' + empEmail);
+    const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+    const select = document.getElementById('exp_select_' + cleanedEmail);
+    const statusEl = document.getElementById('exp_status_' + cleanedEmail);
     
     if (!select) return;
     
@@ -1921,7 +1894,7 @@ function saveExpertise(empEmail, empName) {
             }
             statusEl.textContent = '✓ Saved';
             statusEl.className = 'exp-save-status show saved';
-            updateExpertiseDescription(empEmail, selectedValue);
+            updateExpertiseDescription(cleanedEmail, selectedValue);
             showToast('Expertise updated for ' + empName, 'success');
         } else {
             statusEl.textContent = '✗ Error';
@@ -1942,8 +1915,8 @@ function saveExpertise(empEmail, empName) {
     });
 }
 
-function updateExpertiseDescription(empEmail, value) {
-    const descContainer = document.getElementById('exp_desc_' + empEmail);
+function updateExpertiseDescription(cleanedEmail, value) {
+    const descContainer = document.getElementById('exp_desc_' + cleanedEmail);
     if (descContainer) {
         const desc = getExpertiseDescription(value);
         if (desc) {
@@ -1955,13 +1928,28 @@ function updateExpertiseDescription(empEmail, value) {
 }
 
 // ============================================================
-// SAVE SPECIAL PROJECTS
+// SAVE SPECIAL PROJECTS - FIXED VERSION
 // ============================================================
 function saveSpecialProjects(empEmail, empName) {
-    const textarea = document.getElementById('sp_textarea_' + empEmail);
-    const saveBtn = document.getElementById('sp_save_btn_' + empEmail);
+    if (!empEmail || empEmail === '') {
+        console.error('No email provided for:', empName);
+        showToast('Error: Employee email missing', 'error');
+        return;
+    }
     
-    if (!textarea || !saveBtn) return;
+    // Clean the email for use in element IDs
+    const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+    const spId = 'sp_' + cleanedEmail;
+    
+    const textarea = document.getElementById('sp_textarea_' + spId);
+    const saveBtn = document.getElementById('sp_save_btn_' + spId);
+    
+    if (!textarea || !saveBtn) {
+        console.error('UI elements not found for email:', empEmail);
+        console.error('Looking for IDs: sp_textarea_' + spId + ' and sp_save_btn_' + spId);
+        showToast('Error: UI elements not found for ' + empName, 'error');
+        return;
+    }
     
     const newText = textarea.value;
     
@@ -1969,19 +1957,21 @@ function saveSpecialProjects(empEmail, empName) {
     saveBtn.textContent = '⏳ Saving...';
     saveBtn.classList.remove('saved');
     
+    console.log('Saving special projects for:', empEmail);
+    console.log('Content preview:', newText.substring(0, 100) + (newText.length > 100 ? '...' : ''));
+    
     callAPI('saveSpecialProjects', {
         emp_email: empEmail,
         special_projects: newText
     })
     .then(result => {
+        console.log('Save result:', result);
+        
         if (result.success) {
+            // Update local data
             const emp = allEmployees.find(e => e.Email === empEmail);
             if (emp) {
-                if (typeof emp.SpecialProjects === 'object') {
-                    emp.SpecialProjects.special_projects = newText;
-                } else {
-                    emp.SpecialProjects = newText;
-                }
+                emp.SpecialProjects = { special_projects: newText };
             }
             saveBtn.textContent = '✓ Saved';
             saveBtn.classList.add('saved');
@@ -1994,6 +1984,7 @@ function saveSpecialProjects(empEmail, empName) {
         saveBtn.disabled = false;
     })
     .catch(error => {
+        console.error('Save error:', error);
         saveBtn.textContent = '💾 Save';
         saveBtn.classList.remove('saved');
         saveBtn.disabled = false;
@@ -2001,11 +1992,22 @@ function saveSpecialProjects(empEmail, empName) {
     });
 }
 
+// ============================================================
+// ON SPECIAL PROJECT CHANGE - FIXED
+// ============================================================
 function onSpecialProjectChange(empEmail) {
-    const textarea = document.getElementById('sp_textarea_' + empEmail);
-    const saveBtn = document.getElementById('sp_save_btn_' + empEmail);
+    if (!empEmail) return;
     
-    if (!textarea || !saveBtn) return;
+    const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+    const spId = 'sp_' + cleanedEmail;
+    
+    const textarea = document.getElementById('sp_textarea_' + spId);
+    const saveBtn = document.getElementById('sp_save_btn_' + spId);
+    
+    if (!textarea || !saveBtn) {
+        console.warn('UI elements not found for change event:', empEmail);
+        return;
+    }
     
     saveBtn.textContent = '💾 Save';
     saveBtn.classList.remove('saved');
@@ -2058,7 +2060,7 @@ function renderEmployees(employees) {
 }
 
 // ============================================================
-// BUILD EMPLOYEE CARD
+// BUILD EMPLOYEE CARD - FIXED VERSION
 // ============================================================
 function buildEmployeeCard(emp) {
     let roleClass = 'unknown';
@@ -2083,8 +2085,10 @@ function buildEmployeeCard(emp) {
     }
     detailHtml += '</div>';
     
+    // ✅ FIXED: Consistent ID generation using email
     const empEmail = emp.Email || '';
-    const expId = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+    const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
+    const spId = 'sp_' + cleanedEmail;
     const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
     const currentExpertise = emp.Expertise || '';
     
@@ -2103,14 +2107,14 @@ function buildEmployeeCard(emp) {
         <div class="expertise-editable">
             <div class="exp-header">
                 <label><i class="fa fa-tag"></i> Expertise</label>
-                <span class="exp-save-status" id="exp_status_${expId}"></span>
+                <span class="exp-save-status" id="exp_status_${cleanedEmail}"></span>
             </div>
-            <select class="exp-select" id="exp_select_${expId}" 
+            <select class="exp-select" id="exp_select_${cleanedEmail}" 
                     ${canEdit ? '' : 'disabled'}
                     onchange="saveExpertise('${escapeHtml(empEmail)}', '${escapeHtml(emp.Name)}')">
                 ${optionsHtml}
             </select>
-            <div class="expertise-description" id="exp_desc_${expId}">
+            <div class="expertise-description" id="exp_desc_${cleanedEmail}">
                 ${descHtml}
             </div>
         </div>
@@ -2154,20 +2158,24 @@ function buildEmployeeCard(emp) {
         }
     }
     
+    // ✅ FIXED: Special Projects - uses cleaned email for IDs
     const projectText = getCleanSpecialProjects(emp);
-    const spId = 'sp_' + expId;
     
     let specialHtml = `
         <div class="special-projects-editable">
             <div class="sp-header">
                 <label><i class="fa fa-pencil-square-o"></i> Special Projects</label>
-                <button class="sp-save-btn ${canEdit ? 'show' : ''}" id="sp_save_btn_${spId}" onclick="saveSpecialProjects('${escapeHtml(empEmail)}', '${escapeHtml(emp.Name)}')" style="${!canEdit ? 'display:none;' : ''}">
+                <button class="sp-save-btn ${canEdit ? 'show' : ''}" 
+                        id="sp_save_btn_${spId}" 
+                        onclick="saveSpecialProjects('${escapeHtml(empEmail)}', '${escapeHtml(emp.Name)}')" 
+                        style="${!canEdit ? 'display:none;' : ''}">
                     <i class="fa fa-save"></i> Save
                 </button>
             </div>
-            <textarea class="sp-textarea" id="sp_textarea_${spId}" 
+            <textarea class="sp-textarea" 
+                      id="sp_textarea_${spId}" 
                       placeholder="No special projects listed..." 
-                      oninput="onSpecialProjectChange('${spId}')"
+                      oninput="onSpecialProjectChange('${escapeHtml(empEmail)}')"
                       ${canEdit ? '' : 'disabled'}>${escapeHtml(projectText)}</textarea>
         </div>
     `;
