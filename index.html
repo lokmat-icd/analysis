@@ -1,4 +1,4 @@
-<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzUv6mEILuL8Iu8jlBNl_V7ArIYhpzbnJVct5quaTZoT3MYhTld1kCpvDwozYNvv_yNXg/exec'; -->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbydWGzVd_yqFpqfM88d1xDcfLZEK3c0939PyGbH3J3BiXRHlvLgxxGPx0deLcpfVlfSMA/exec'; -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -1250,7 +1250,7 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzUv6mEILuL8Iu8jlBNl_V7ArIYhpzbnJVct5quaTZoT3MYhTld1kCpvDwozYNvv_yNXg/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbydWGzVd_yqFpqfM88d1xDcfLZEK3c0939PyGbH3J3BiXRHlvLgxxGPx0deLcpfVlfSMA/exec';
 
 // ============================================================
 // EXPERTISE OPTIONS - UPDATED
@@ -1323,7 +1323,16 @@ async function handleLogin() {
             document.getElementById('loginOverlay').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
             document.getElementById('headerUserName').textContent = result.user.name;
-            document.getElementById('headerUserRole').textContent = result.user.role + (result.user.role === 'ICD Head' ? ' - ' + result.user.unit : '');
+            
+            // Show role and units for ICD Head
+            if (result.user.role === 'ICD Head') {
+                const unitsDisplay = result.user.units && result.user.units.length > 0 
+                    ? ' - ' + result.user.units.join(', ') 
+                    : '';
+                document.getElementById('headerUserRole').textContent = 'ICD Head' + unitsDisplay;
+            } else {
+                document.getElementById('headerUserRole').textContent = result.user.role;
+            }
             
             await loadAllData();
         } else {
@@ -1414,8 +1423,12 @@ async function loadAllData() {
         
         const unitResult = await callAPI('getUnits');
         if (unitResult.success) {
-            if (loggedInUser && loggedInUser.role === 'ICD Head') {
-                populateUnitDropdownForICDHead(loggedInUser.unit);
+            // For ICD Head, show only their units
+            if (loggedInUser && loggedInUser.role === 'ICD Head' && loggedInUser.units && loggedInUser.units.length > 0) {
+                populateUnitDropdownForICDHead(loggedInUser.units);
+            } else if (loggedInUser && loggedInUser.role === 'ICD Head') {
+                // Fallback: if no units in array, use the single unit
+                populateUnitDropdownForICDHead([loggedInUser.unit]);
             } else {
                 populateUnitDropdown(unitResult.units);
             }
@@ -1496,7 +1509,7 @@ function updateHeaderStats() {
 }
 
 // ============================================================
-// POPULATE UNIT DROPDOWN
+// POPULATE UNIT DROPDOWN - Admin
 // ============================================================
 function populateUnitDropdown(units) {
     const select = document.getElementById('unitFilter');
@@ -1510,14 +1523,29 @@ function populateUnitDropdown(units) {
     });
 }
 
-function populateUnitDropdownForICDHead(unit) {
+// ============================================================
+// POPULATE UNIT DROPDOWN - ICD Head (Multiple Units)
+// ============================================================
+function populateUnitDropdownForICDHead(units) {
     const select = document.getElementById('unitFilter');
     select.innerHTML = '';
-    const option = document.createElement('option');
-    option.value = unit;
-    option.textContent = unit;
-    select.appendChild(option);
-    select.value = unit;
+    
+    // Add "All Units" option for ICD Head
+    const allOption = document.createElement('option');
+    allOption.value = '';
+    allOption.textContent = 'All Units';
+    select.appendChild(allOption);
+    
+    // Add all units the ICD Head manages
+    units.forEach(unit => {
+        const option = document.createElement('option');
+        option.value = unit;
+        option.textContent = unit;
+        select.appendChild(option);
+    });
+    
+    // Default: select the first unit or "All Units"
+    select.value = units.length > 0 ? units[0] : '';
 }
 
 // ============================================================
@@ -1536,7 +1564,7 @@ function populateWorkplaceDropdown(workplaces) {
 }
 
 // ============================================================
-// APPLY FILTERS
+// APPLY FILTERS - Updated for ICD Head Multiple Units
 // ============================================================
 function applyFilters() {
     const unit = document.getElementById('unitFilter').value;
@@ -1546,9 +1574,31 @@ function applyFilters() {
     currentUnit = unit;
     currentWorkplace = workplace;
     
+    // For ICD Head, if "All Units" is selected, show all employees from their units
+    let allowedUnits = [];
+    if (loggedInUser && loggedInUser.role === 'ICD Head' && loggedInUser.units && loggedInUser.units.length > 0) {
+        allowedUnits = loggedInUser.units;
+    } else if (loggedInUser && loggedInUser.role === 'ICD Head') {
+        allowedUnits = [loggedInUser.unit];
+    }
+    
     filteredEmployees = allEmployees.filter(emp => {
         if (!emp.Name) return false;
-        if (unit && emp.Unit !== unit) return false;
+        
+        // For ICD Head, check if employee's unit is in allowed units
+        if (loggedInUser && loggedInUser.role === 'ICD Head') {
+            if (unit) {
+                // Specific unit selected
+                if (emp.Unit !== unit) return false;
+            } else {
+                // "All Units" selected - only show employees from allowed units
+                if (!allowedUnits.includes(emp.Unit)) return false;
+            }
+        } else {
+            // Admin - normal filtering
+            if (unit && emp.Unit !== unit) return false;
+        }
+        
         if (workplace && emp.WorkPlace !== workplace) return false;
         if (currentTypeFilter !== 'all' && emp.Type !== currentTypeFilter) return false;
         if (searchTerm && !emp.Name.toLowerCase().includes(searchTerm)) return false;
@@ -1565,33 +1615,61 @@ function applyFilters() {
 }
 
 // ============================================================
-// UPDATE WORKPLACE DROPDOWN
+// UPDATE WORKPLACE DROPDOWN - Updated for ICD Head
 // ============================================================
 function updateWorkplaceDropdown(unit) {
     const select = document.getElementById('workplaceFilter');
     const currentValue = select.value;
     
-    if (!unit) {
-        const workplaces = {};
-        allEmployees.forEach(emp => {
-            if (emp.WorkPlace && emp.WorkPlace.trim()) {
-                if (!workplaces[emp.WorkPlace]) workplaces[emp.WorkPlace] = 0;
-                workplaces[emp.WorkPlace]++;
-            }
-        });
-        const workplaceList = Object.keys(workplaces).map(key => ({ name: key, count: workplaces[key] }));
-        populateWorkplaceDropdown(workplaceList);
+    // For ICD Head with "All Units" selected
+    let unitsToCheck = [];
+    if (loggedInUser && loggedInUser.role === 'ICD Head') {
+        if (unit) {
+            unitsToCheck = [unit];
+        } else {
+            // "All Units" - get all units from all employees (filtered)
+            unitsToCheck = [...new Set(filteredEmployees.map(emp => emp.Unit).filter(u => u))];
+        }
     } else {
-        const workplaces = {};
-        allEmployees.forEach(emp => {
-            if (emp.Unit === unit && emp.WorkPlace && emp.WorkPlace.trim()) {
-                if (!workplaces[emp.WorkPlace]) workplaces[emp.WorkPlace] = 0;
-                workplaces[emp.WorkPlace]++;
+        // Admin - normal behavior
+        if (!unit) {
+            const workplaces = {};
+            allEmployees.forEach(emp => {
+                if (emp.WorkPlace && emp.WorkPlace.trim()) {
+                    if (!workplaces[emp.WorkPlace]) workplaces[emp.WorkPlace] = 0;
+                    workplaces[emp.WorkPlace]++;
+                }
+            });
+            const workplaceList = Object.keys(workplaces).map(key => ({ name: key, count: workplaces[key] }));
+            populateWorkplaceDropdown(workplaceList);
+            if (currentValue) {
+                let found = false;
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === currentValue) {
+                        select.value = currentValue;
+                        found = true;
+                        break;
+                    }
+                }
+                if (!found) select.value = '';
             }
-        });
-        const workplaceList = Object.keys(workplaces).map(key => ({ name: key, count: workplaces[key] }));
-        populateWorkplaceDropdown(workplaceList);
+            return;
+        } else {
+            unitsToCheck = [unit];
+        }
     }
+    
+    // Get workplaces for the units
+    const workplaces = {};
+    allEmployees.forEach(emp => {
+        if (unitsToCheck.includes(emp.Unit) && emp.WorkPlace && emp.WorkPlace.trim()) {
+            if (!workplaces[emp.WorkPlace]) workplaces[emp.WorkPlace] = 0;
+            workplaces[emp.WorkPlace]++;
+        }
+    });
+    
+    const workplaceList = Object.keys(workplaces).map(key => ({ name: key, count: workplaces[key] }));
+    populateWorkplaceDropdown(workplaceList);
     
     if (currentValue) {
         let found = false;
@@ -1622,7 +1700,8 @@ function updateCommonUnitProjects(unit) {
     saveBtn.disabled = false;
     statusEl.className = 'cup-save-status';
     
-    if (!unit || unit === '' || unit === 'All Units') {
+    // For ICD Head, hide Common Unit Projects (Admin only)
+    if (!unit || unit === '' || unit === 'All Units' || (loggedInUser && loggedInUser.role === 'ICD Head')) {
         container.classList.remove('visible');
         return;
     }
