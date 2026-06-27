@@ -1,4 +1,4 @@
-<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwgI6KTYxCdf7bZGGvfLngXFYsN2XqqQVDbPdWmA6SSoXXJTmEmgVAm7ByYPnBjbt1Z9g/exec'; -->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzVkLAKL3YSnzUMs8xxVEdslJcoP25i86O0Fy52wcitrYiBshWGDgMsd1XkypTkhS03zg/exec'; -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -112,7 +112,7 @@
         }
         #loginOverlay .login-box .login-error.show { display: block; }
 
-        /* HEADER */
+        /* HEADER - Two Row Layout */
         .header {
             background: linear-gradient(135deg, #1a3a6b 0%, #2a5298 100%);
             color: white;
@@ -120,86 +120,39 @@
             border-radius: 12px;
             margin-bottom: 25px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        .header-row1 {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
-            min-height: 70px;
+            gap: 10px;
+            min-height: 50px;
         }
+
+        .header-row2 {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            margin-top: 4px;
+            flex-wrap: wrap;
+        }
+
         .header-left {
             display: flex;
             align-items: center;
+            flex-shrink: 0;
         }
+
         .header-logo {
             height: 45px;
             width: auto;
             object-fit: contain;
         }
-        .header-center {
-            display: flex;
-            align-items: center;
-            gap: 15px 25px;
-            flex-wrap: wrap;
-        }
-        .header-stats {
-            display: flex;
-            gap: 15px 20px;
-            background: rgba(255,255,255,0.12);
-            padding: 6px 18px;
-            border-radius: 8px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-        .header-stats .stat-group {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .header-stats .stat-group .stat-label {
-            font-size: 11px;
-            opacity: 0.8;
-            font-weight: 500;
-        }
-        .header-stats .stat-group .stat-value {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .header-stats .stat-divider {
-            color: rgba(255,255,255,0.3);
-            font-size: 16px;
-            font-weight: 100;
-        }
-        .header-stats .skill-group {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .header-stats .skill-item {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            font-size: 12px;
-            background: rgba(255,255,255,0.15);
-            padding: 2px 10px 2px 8px;
-            border-radius: 20px;
-        }
-        .header-stats .skill-item .skill-name {
-            font-weight: 500;
-        }
-        .header-stats .skill-item .skill-count {
-            font-weight: 700;
-            background: rgba(255,255,255,0.2);
-            padding: 0 6px;
-            border-radius: 10px;
-            font-size: 11px;
-        }
-        .header-stats .skill-label {
-            font-size: 11px;
-            opacity: 0.8;
-            font-weight: 500;
-            margin-right: 2px;
-        }
+
         .header-user {
             display: flex;
             align-items: center;
@@ -209,14 +162,17 @@
             border-radius: 30px;
             flex-shrink: 0;
         }
+
         .header-user .user-name {
             font-size: 14px;
             font-weight: 500;
         }
+
         .header-user .user-role {
             font-size: 11px;
             opacity: 0.7;
         }
+
         .header-user .logout-header-btn {
             background: rgba(255,255,255,0.15);
             border: none;
@@ -227,9 +183,81 @@
             cursor: pointer;
             transition: all 0.2s;
         }
+
         .header-user .logout-header-btn:hover {
             background: rgba(255,255,255,0.25);
         }
+
+        /* Header Stats - Row 2 */
+        .header-stats {
+    display: flex;
+    gap: 8px 14px;
+    background: rgba(255,255,255,0.08);
+    padding: 4px 14px;
+    border-radius: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+}
+
+.header-stats .stat-group {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.header-stats .stat-group .stat-label {
+    font-size: 10px;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+.header-stats .stat-group .stat-value {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.header-stats .stat-divider {
+    color: rgba(255,255,255,0.2);
+    font-size: 12px;
+    font-weight: 100;
+}
+
+.header-stats .skill-group {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+.header-stats .skill-item {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    background: rgba(255,255,255,0.12);
+    padding: 1px 8px 1px 6px;
+    border-radius: 16px;
+}
+
+.header-stats .skill-item .skill-name {
+    font-weight: 500;
+}
+
+.header-stats .skill-item .skill-count {
+    font-weight: 700;
+    background: rgba(255,255,255,0.2);
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 9px;
+}
+
+.header-stats .skill-label {
+    font-size: 10px;
+    opacity: 0.8;
+    font-weight: 500;
+    margin-right: 2px;
+}
 
         /* FILTERS */
         .filters-section {
@@ -295,7 +323,7 @@
             box-shadow: 0 0 0 2px rgba(42,82,152,0.15);
         }
 
-        /* COMMON UNIT PROJECTS - Below Filters */
+        /* COMMON UNIT PROJECTS - Admin Only */
         .common-unit-projects {
             background: white;
             padding: 16px 22px;
@@ -411,7 +439,7 @@
             opacity: 0.8;
         }
 
-        /* TEAM WORKLOAD BAR */
+        /* TEAM WORKLOAD BAR - View Only */
         .team-workload-bar {
             background: white;
             padding: 16px 22px;
@@ -530,7 +558,7 @@
             color: #aaa;
         }
 
-        /* WORK PLACE OTHER WORKLOAD BAR */
+        /* WORK PLACE OTHER WORKLOAD - Editable by Admin AND ICD Head */
         .wpow-bar {
             background: white;
             padding: 16px 22px;
@@ -792,7 +820,7 @@
             margin: 0 4px;
         }
 
-        /* Expertise */
+        /* Expertise - Updated Options */
         .expertise-editable {
             margin-top: 8px;
             padding-top: 8px;
@@ -997,11 +1025,13 @@
         .loading-spinner i { font-size: 32px; margin-bottom: 12px; display: block; color: #2a5298; }
 
         @media (max-width: 768px) {
-            .header { flex-direction: column; align-items: stretch; padding: 15px; gap: 10px; }
-            .header-left { justify-content: center; }
-            .header-center { justify-content: center; }
-            .header-user { justify-content: center; }
-            .header-stats { justify-content: center; }
+            .header-row1 {
+                flex-direction: column;
+                align-items: center;
+            }
+            .header-stats {
+                justify-content: center;
+            }
             .filters-section { flex-direction: column; align-items: stretch; }
             .filter-group { justify-content: center; }
             .employee-grid { grid-template-columns: 1fr; }
@@ -1027,6 +1057,9 @@
             .header-stats .skill-group { gap: 4px; }
             .header-stats .skill-item { font-size: 10px; padding: 1px 6px; }
             .common-unit-projects .cup-textarea { min-height: 50px; font-size: 12px; }
+            .header-user {
+                padding: 4px 10px;
+            }
         }
     </style>
 </head>
@@ -1057,21 +1090,26 @@
 
 <div class="container-fluid" id="mainContent" style="display:none;">
 
-    <!-- HEADER -->
+    <!-- HEADER - Two Row Layout -->
     <div class="header">
-        <div class="header-left">
-            <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" 
-                 alt="LOKMAT" class="header-logo" 
-                 onerror="this.style.display='none'">
-        </div>
-        <div class="header-center" id="headerCenter"></div>
-        <div class="header-user">
-            <div>
-                <div class="user-name" id="headerUserName">User</div>
-                <div class="user-role" id="headerUserRole">Role</div>
+        <!-- Row 1: Logo and User/Logout -->
+        <div class="header-row1">
+            <div class="header-left">
+                <img src="https://lh3.googleusercontent.com/d/1uLdST5g0rbVFpAV_i7qJXAI1nZJo20lQ" 
+                     alt="LOKMAT" class="header-logo" 
+                     onerror="this.style.display='none'">
             </div>
-            <button class="logout-header-btn" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+            <div class="header-user">
+                <div>
+                    <div class="user-name" id="headerUserName">User</div>
+                    <div class="user-role" id="headerUserRole">Role</div>
+                </div>
+                <button class="logout-header-btn" onclick="logout()"><i class="fa fa-sign-out"></i> Logout</button>
+            </div>
         </div>
+        
+        <!-- Row 2: Stats -->
+        <div class="header-row2" id="headerRow2"></div>
     </div>
 
     <!-- FILTERS -->
@@ -1102,7 +1140,7 @@
         </div>
     </div>
 
-    <!-- COMMON UNIT PROJECTS - Below Filters (Unit Level) -->
+    <!-- COMMON UNIT PROJECTS - Admin Only -->
     <div class="common-unit-projects" id="commonUnitProjects">
         <div class="cup-container">
             <div class="cup-header">
@@ -1124,7 +1162,7 @@
         </div>
     </div>
 
-    <!-- TEAM WORKLOAD BAR -->
+    <!-- TEAM WORKLOAD BAR - View Only -->
     <div class="team-workload-bar" id="teamWorkloadBar">
         <div class="tw-title"><i class="fa fa-tasks"></i> 📊 Team Workload</div>
         <div class="tw-container" id="twContainer">
@@ -1147,7 +1185,7 @@
         </div>
     </div>
 
-    <!-- WORK PLACE OTHER WORKLOAD BAR -->
+    <!-- WORK PLACE OTHER WORKLOAD - Editable by Admin AND ICD Head -->
     <div class="wpow-bar" id="wpowBar">
         <div class="wpow-title"><i class="fa fa-tasks"></i> 📋 Work Place Other Workload</div>
         <div class="wpow-row">
@@ -1212,15 +1250,15 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbwgI6KTYxCdf7bZGGvfLngXFYsN2XqqQVDbPdWmA6SSoXXJTmEmgVAm7ByYPnBjbt1Z9g/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzVkLAKL3YSnzUMs8xxVEdslJcoP25i86O0Fy52wcitrYiBshWGDgMsd1XkypTkhS03zg/exec';
 
 // ============================================================
-// EXPERTISE OPTIONS
+// EXPERTISE OPTIONS - UPDATED
 // ============================================================
 const EXPERTISE_OPTIONS = [
     { value: '', description: 'Select an expertise...' },
     { value: 'Normal Pagination', description: 'Designer mostly does pagination work' },
-	{ value: 'Creative/Feature Page Design', description: 'Designer mostly does Creative/Feature page design' },
+    { value: 'Creative/Feature Page Design', description: 'Designer mostly does Creative/Feature page design' },
     { value: 'Event/Advt', description: 'Designer mostly does Event and Advertisement work' },
     { value: 'Photo', description: 'Designer mostly does Photo editing work' },
     { value: 'PDF Final/QC', description: 'Designer mostly does PDF Making & Checking work' },
@@ -1392,10 +1430,10 @@ async function loadAllData() {
 }
 
 // ============================================================
-// UPDATE HEADER STATS
+// UPDATE HEADER STATS - Now in Row 2
 // ============================================================
 function updateHeaderStats() {
-    const container = document.getElementById('headerCenter');
+    const container = document.getElementById('headerRow2');
     if (!loggedInUser) { container.innerHTML = ''; return; }
     
     if (loggedInUser.role === 'Admin') {
@@ -1403,11 +1441,12 @@ function updateHeaderStats() {
         let fta = 0, vou = 0, cnf = 0, icdHead = 0;
         
         const expertiseCounts = {
-            'Allrounder': 0,
+            'Normal Pagination': 0,
+            'Creative/Feature Page Design': 0,
             'Event/Advt': 0,
-            'Prepress': 0,
             'Photo': 0,
-            'Pagination': 0
+            'PDF Final/QC': 0,
+            'Allrounder': 0
         };
         
         allEmployees.forEach(emp => {
@@ -1422,7 +1461,7 @@ function updateHeaderStats() {
         });
         
         let skillHtml = '';
-        const skillOrder = ['Allrounder', 'Event/Advt', 'Prepress', 'Photo', 'Pagination'];
+        const skillOrder = ['Allrounder', 'Creative/Feature Page Design', 'Event/Advt', 'Photo', 'Normal Pagination', 'PDF Final/QC'];
         skillOrder.forEach(skill => {
             const count = expertiseCounts[skill] || 0;
             if (count > 0) {
@@ -1565,7 +1604,7 @@ function updateWorkplaceDropdown(unit) {
 }
 
 // ============================================================
-// COMMON UNIT PROJECTS FUNCTIONS
+// COMMON UNIT PROJECTS FUNCTIONS - Admin Only
 // ============================================================
 function updateCommonUnitProjects(unit) {
     const container = document.getElementById('commonUnitProjects');
@@ -1574,14 +1613,12 @@ function updateCommonUnitProjects(unit) {
     const saveBtn = document.getElementById('cupSaveBtn');
     const statusEl = document.getElementById('cupStatus');
     
-    // Reset state
     cupChanged = false;
     saveBtn.style.display = 'none';
     saveBtn.classList.remove('saved');
     saveBtn.disabled = false;
     statusEl.className = 'cup-save-status';
     
-    // If no unit selected or "All Units", hide the section
     if (!unit || unit === '' || unit === 'All Units') {
         container.classList.remove('visible');
         return;
@@ -1589,22 +1626,18 @@ function updateCommonUnitProjects(unit) {
     
     const canEdit = loggedInUser && loggedInUser.role === 'Admin';
     
-    // Show the section
     container.classList.add('visible');
     unitName.textContent = unit;
     
-    // Disable textarea if not Admin
     textarea.disabled = !canEdit;
     if (!canEdit) {
         textarea.title = 'Only Admin can edit Common Unit Projects';
     }
     
-    // Show loading state
     textarea.value = 'Loading...';
     statusEl.className = 'cup-save-status show saving';
     statusEl.textContent = '⏳ Loading...';
     
-    // Fetch data
     callAPI('getCommonUnitProjects', { unit: unit })
         .then(result => {
             if (result.success) {
@@ -1612,16 +1645,14 @@ function updateCommonUnitProjects(unit) {
                 currentCommonProjects = result.commonProjects || '';
                 textarea.value = currentCommonProjects;
                 
-                // Update status
                 if (result.found) {
                     statusEl.className = 'cup-save-status show saved';
                     statusEl.textContent = '✓ Loaded';
                 } else {
                     statusEl.className = 'cup-save-status show';
-                    statusEl.textContent = 'ℹ️ No projects found - create new';
+                    statusEl.textContent = 'ℹ️ No projects found';
                 }
                 
-                // Reset changed state
                 cupChanged = false;
                 saveBtn.style.display = 'none';
                 
@@ -1673,6 +1704,11 @@ function saveCommonUnitProjects() {
     const saveBtn = document.getElementById('cupSaveBtn');
     const statusEl = document.getElementById('cupStatus');
     const unit = currentCommonUnit;
+    
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        showToast('Only Admin can save Common Unit Projects', 'error');
+        return;
+    }
     
     if (!unit || unit === '') {
         showToast('No unit selected', 'error');
@@ -1727,7 +1763,7 @@ function saveCommonUnitProjects() {
 }
 
 // ============================================================
-// UPDATE TEAM WORKLOAD
+// UPDATE TEAM WORKLOAD - View Only for All
 // ============================================================
 function updateTeamWorkload(workplace) {
     const bar = document.getElementById('teamWorkloadBar');
@@ -1804,7 +1840,7 @@ function updateTeamWorkload(workplace) {
 }
 
 // ============================================================
-// LOAD REMARK
+// LOAD REMARK - Admin Only
 // ============================================================
 function loadRemark(workplace) {
     const remarkInput = document.getElementById('remarkInput');
@@ -1844,6 +1880,11 @@ function onRemarkChange() {
     const saveBtn = document.getElementById('remarkSaveBtn');
     const newValue = remarkInput.value;
     
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        saveBtn.disabled = true;
+        return;
+    }
+    
     if (newValue !== currentRemark) {
         remarkChanged = true;
         saveBtn.textContent = '💾 Save';
@@ -1862,6 +1903,11 @@ function saveRemark() {
     const saveBtn = document.getElementById('remarkSaveBtn');
     const fullText = remarkInput.value;
     const workplace = currentWorkplace;
+    
+    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+        showToast('Only Admin can save WP Remark', 'error');
+        return;
+    }
     
     if (!workplace || workplace === '') {
         return;
@@ -1902,7 +1948,7 @@ function saveRemark() {
 }
 
 // ============================================================
-// UPDATE WPOW DATA (Work Place Other Workload)
+// UPDATE WPOW DATA - Editable by Admin AND ICD Head
 // ============================================================
 function updateWPOWData(workplace) {
     const bar = document.getElementById('wpowBar');
@@ -1921,7 +1967,7 @@ function updateWPOWData(workplace) {
     
     bar.classList.add('visible');
     
-    const canEdit = loggedInUser && loggedInUser.role === 'Admin';
+    const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
     
     callAPI('getWPOWData', { workplace: workplace })
         .then(result => {
@@ -1940,7 +1986,7 @@ function updateWPOWData(workplace) {
                 inputs.forEach(input => {
                     input.disabled = !canEdit;
                     if (!canEdit) {
-                        input.title = 'Only Admin can edit Work Place Other Workload';
+                        input.title = 'Only Admin and ICD Head can edit Work Place Other Workload';
                     }
                 });
                 
@@ -1992,13 +2038,13 @@ function updateWPOWData(workplace) {
 }
 
 // ============================================================
-// WPOW DATA - CHANGE HANDLER
+// WPOW DATA - CHANGE HANDLER (Admin OR ICD Head)
 // ============================================================
 function onWPOWChange() {
     const saveBtn = document.getElementById('wpowSaveBtn');
     const statusEl = document.getElementById('wpowStatus');
     
-    if (!loggedInUser || loggedInUser.role !== 'Admin') {
+    if (!loggedInUser || (loggedInUser.role !== 'Admin' && loggedInUser.role !== 'ICD Head')) {
         saveBtn.style.display = 'none';
         return;
     }
@@ -2030,12 +2076,17 @@ function onWPOWChange() {
 }
 
 // ============================================================
-// SAVE WPOW DATA
+// SAVE WPOW DATA (Admin OR ICD Head)
 // ============================================================
 function saveWPOWData() {
     const saveBtn = document.getElementById('wpowSaveBtn');
     const statusEl = document.getElementById('wpowStatus');
     const workplace = currentWorkplace;
+    
+    if (!loggedInUser || (loggedInUser.role !== 'Admin' && loggedInUser.role !== 'ICD Head')) {
+        showToast('Only Admin and ICD Head can save Work Place Other Workload', 'error');
+        return;
+    }
     
     if (!workplace || workplace === '') return;
     if (wpowSaving) return;
@@ -2103,7 +2154,7 @@ function saveWPOWData() {
 }
 
 // ============================================================
-// UPDATE EXPERTISE STATS
+// UPDATE EXPERTISE STATS - Updated with new options
 // ============================================================
 function updateExpertiseStats(employees) {
     const container = document.getElementById('expertiseList');
@@ -2173,7 +2224,7 @@ function setTypeFilter(type) {
 }
 
 // ============================================================
-// GET EXPERTISE DESCRIPTION
+// GET EXPERTISE DESCRIPTION - Updated
 // ============================================================
 function getExpertiseDescription(value) {
     const option = EXPERTISE_OPTIONS.find(opt => opt.value === value);
@@ -2181,7 +2232,7 @@ function getExpertiseDescription(value) {
 }
 
 // ============================================================
-// SAVE EXPERTISE
+// SAVE EXPERTISE - Admin OR ICD Head
 // ============================================================
 function saveExpertise(empEmail, empName) {
     const cleanedEmail = empEmail.replace(/[^a-zA-Z0-9@._-]/g, '_');
@@ -2241,7 +2292,7 @@ function updateExpertiseDescription(cleanedEmail, value) {
 }
 
 // ============================================================
-// SAVE SPECIAL PROJECTS
+// SAVE SPECIAL PROJECTS - Admin OR ICD Head
 // ============================================================
 function saveSpecialProjects(empEmail, empName) {
     if (!empEmail || empEmail === '') {
@@ -2368,7 +2419,7 @@ function renderEmployees(employees) {
 }
 
 // ============================================================
-// BUILD EMPLOYEE CARD
+// BUILD EMPLOYEE CARD - Updated with new expertise options
 // ============================================================
 function buildEmployeeCard(emp) {
     let roleClass = 'unknown';
@@ -2399,6 +2450,7 @@ function buildEmployeeCard(emp) {
     const canEdit = loggedInUser && (loggedInUser.role === 'Admin' || loggedInUser.role === 'ICD Head');
     const currentExpertise = emp.Expertise || '';
     
+    // Updated expertise options
     let optionsHtml = '';
     EXPERTISE_OPTIONS.forEach(option => {
         const selected = (currentExpertise === option.value) ? 'selected' : '';
