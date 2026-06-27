@@ -1,4 +1,4 @@
-<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzVkLAKL3YSnzUMs8xxVEdslJcoP25i86O0Fy52wcitrYiBshWGDgMsd1XkypTkhS03zg/exec'; -->
+<!--const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxEFuXq1nL7VsLCjgHgb_XxY_EGaeFigKFcQd19czddPBVtGC8sZx0viaIdQrTaOHVtEA/exec'; -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -190,74 +190,74 @@
 
         /* Header Stats - Row 2 */
         .header-stats {
-    display: flex;
-    gap: 8px 14px;
-    background: rgba(255,255,255,0.08);
-    padding: 4px 14px;
-    border-radius: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    width: 100%;
-}
+            display: flex;
+            gap: 8px 14px;
+            background: rgba(255,255,255,0.08);
+            padding: 4px 14px;
+            border-radius: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+            width: 100%;
+        }
 
-.header-stats .stat-group {
-    display: flex;
-    align-items: center;
-    gap: 3px;
-}
+        .header-stats .stat-group {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
 
-.header-stats .stat-group .stat-label {
-    font-size: 10px;
-    opacity: 0.8;
-    font-weight: 500;
-}
+        .header-stats .stat-group .stat-label {
+            font-size: 10px;
+            opacity: 0.8;
+            font-weight: 500;
+        }
 
-.header-stats .stat-group .stat-value {
-    font-size: 13px;
-    font-weight: 600;
-}
+        .header-stats .stat-group .stat-value {
+            font-size: 13px;
+            font-weight: 600;
+        }
 
-.header-stats .stat-divider {
-    color: rgba(255,255,255,0.2);
-    font-size: 12px;
-    font-weight: 100;
-}
+        .header-stats .stat-divider {
+            color: rgba(255,255,255,0.2);
+            font-size: 12px;
+            font-weight: 100;
+        }
 
-.header-stats .skill-group {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex-wrap: wrap;
-}
+        .header-stats .skill-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
 
-.header-stats .skill-item {
-    display: flex;
-    align-items: center;
-    gap: 2px;
-    font-size: 10px;
-    background: rgba(255,255,255,0.12);
-    padding: 1px 8px 1px 6px;
-    border-radius: 16px;
-}
+        .header-stats .skill-item {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            font-size: 10px;
+            background: rgba(255,255,255,0.12);
+            padding: 1px 8px 1px 6px;
+            border-radius: 16px;
+        }
 
-.header-stats .skill-item .skill-name {
-    font-weight: 500;
-}
+        .header-stats .skill-item .skill-name {
+            font-weight: 500;
+        }
 
-.header-stats .skill-item .skill-count {
-    font-weight: 700;
-    background: rgba(255,255,255,0.2);
-    padding: 0 4px;
-    border-radius: 8px;
-    font-size: 9px;
-}
+        .header-stats .skill-item .skill-count {
+            font-weight: 700;
+            background: rgba(255,255,255,0.2);
+            padding: 0 4px;
+            border-radius: 8px;
+            font-size: 9px;
+        }
 
-.header-stats .skill-label {
-    font-size: 10px;
-    opacity: 0.8;
-    font-weight: 500;
-    margin-right: 2px;
-}
+        .header-stats .skill-label {
+            font-size: 10px;
+            opacity: 0.8;
+            font-weight: 500;
+            margin-right: 2px;
+        }
 
         /* FILTERS */
         .filters-section {
@@ -1250,7 +1250,7 @@
 // ============================================================
 // CONFIGURATION
 // ============================================================
-const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbzVkLAKL3YSnzUMs8xxVEdslJcoP25i86O0Fy52wcitrYiBshWGDgMsd1XkypTkhS03zg/exec';
+const API_BASE_URL = 'https://script.google.com/macros/s/AKfycbxEFuXq1nL7VsLCjgHgb_XxY_EGaeFigKFcQd19czddPBVtGC8sZx0viaIdQrTaOHVtEA/exec';
 
 // ============================================================
 // EXPERTISE OPTIONS - UPDATED
@@ -1259,7 +1259,8 @@ const EXPERTISE_OPTIONS = [
     { value: '', description: 'Select an expertise...' },
     { value: 'Normal Pagination', description: 'Designer mostly does pagination work' },
     { value: 'Creative/Feature Page Design', description: 'Designer mostly does Creative/Feature page design' },
-    { value: 'Event/Advt', description: 'Designer mostly does Event and Advertisement work' },
+    { value: 'Event/Creative Advt', description: 'Designer mostly does Event and Creative Advertisement work' },
+    { value: 'Notice/Display Advt', description: 'Designer mostly does Notice and Display Advertisement work' },
     { value: 'Photo', description: 'Designer mostly does Photo editing work' },
     { value: 'PDF Final/QC', description: 'Designer mostly does PDF Making & Checking work' },
     { value: 'Allrounder', description: 'Designer is Expert in all work' }
@@ -1440,10 +1441,12 @@ function updateHeaderStats() {
         let total = allEmployees.length;
         let fta = 0, vou = 0, cnf = 0, icdHead = 0;
         
+        // Updated expertise counts with new options
         const expertiseCounts = {
             'Normal Pagination': 0,
             'Creative/Feature Page Design': 0,
-            'Event/Advt': 0,
+            'Event/Creative Advt': 0,
+            'Notice/Display Advt': 0,
             'Photo': 0,
             'PDF Final/QC': 0,
             'Allrounder': 0
@@ -1461,7 +1464,7 @@ function updateHeaderStats() {
         });
         
         let skillHtml = '';
-        const skillOrder = ['Allrounder', 'Creative/Feature Page Design', 'Event/Advt', 'Photo', 'Normal Pagination', 'PDF Final/QC'];
+        const skillOrder = ['Allrounder', 'Creative/Feature Page Design', 'Event/Creative Advt', 'Notice/Display Advt', 'Photo', 'Normal Pagination', 'PDF Final/QC'];
         skillOrder.forEach(skill => {
             const count = expertiseCounts[skill] || 0;
             if (count > 0) {
