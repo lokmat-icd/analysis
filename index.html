@@ -2699,16 +2699,20 @@ function buildEmployeeCard(emp) {
     `;
     
     let hodStatusHtml = '';
-    let hodLevel = 'na';
-    let hodText = 'Not Assessed';
-    if (emp.HODEvaluation && emp.HODEvaluation.Overall_Assessed_Level) {
-        hodLevel = emp.HODEvaluation.Overall_Assessed_Level.toLowerCase();
-        if (hodLevel === 'de') hodText = 'DE - Distinguished Expert';
-        else if (hodLevel === 'me') hodText = 'ME - Meets Expectations';
-        else if (hodLevel === 'ni') hodText = 'NI - Needs Improvement';
-        else hodText = emp.HODEvaluation.Overall_Assessed_Level;
-        hodStatusHtml = '<span class="hod-status ' + hodLevel + '">⭐ ' + hodText + '</span>';
-    }
+	let hodLevel = 'na';
+	let hodText = 'Not Assessed';
+
+	// Only show HOD evaluation if user is Admin (not ICD Head)
+	const isAdmin = loggedInUser && loggedInUser.role === 'Admin';
+
+	if (isAdmin && emp.HODEvaluation && emp.HODEvaluation.Overall_Assessed_Level) {
+		hodLevel = emp.HODEvaluation.Overall_Assessed_Level.toLowerCase();
+		if (hodLevel === 'de') hodText = 'DE - Distinguished Expert';
+		else if (hodLevel === 'me') hodText = 'ME - Meets Expectations';
+		else if (hodLevel === 'ni') hodText = 'NI - Needs Improvement';
+		else hodText = emp.HODEvaluation.Overall_Assessed_Level;
+		hodStatusHtml = '<span class="hod-status ' + hodLevel + '">⭐ ' + hodText + '</span>';
+	}
     
     return `
         <div class="employee-card">
